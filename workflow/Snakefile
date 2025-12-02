@@ -1,0 +1,71 @@
+# ----------------------------------------------------- #
+# A Snakemake workflow for the post-processing of       #
+# microbial genome assemblies.                          #
+# ----------------------------------------------------- #
+
+
+# -----------------------------------------------------
+# container definition (optional)
+# -----------------------------------------------------
+container: "oras://ghcr.io/mpusp/snakemake-assembly-post-processing:latest"
+
+
+# -----------------------------------------------------
+# load configuration
+# -----------------------------------------------------
+configfile: "config/config.yml"
+
+
+# -----------------------------------------------------
+# load rules
+# -----------------------------------------------------
+include: "rules/common.smk"
+
+
+# -----------------------------------------------------
+# meta data and run info
+# -----------------------------------------------------
+__authors__ = ["Rina Ahmed-Begrich", "Michael Jahn"]
+
+cyan = "\033[36m"
+end = "\033[0m"
+
+msg = f"""\nSnakemake-assembly-postprocessing: A Snakemake workflow 
+for the post-processing of microbial genome assemblies."""
+
+OUTDIR = config.get("outdir", "")
+
+if not OUTDIR:
+    OUTDIR = f"{os.getcwd()}/results"
+
+prolog = f"Output directory: {OUTDIR}"
+year = datetime.today().year
+
+epilog = f"""
+Written by {", ".join(__authors__)}.
+Max Planck Unit for the Science of Pathogens. Copyright (c) {year}.
+"""
+
+
+# -----------------------------------------------------
+# optional messages, log and error handling
+# -----------------------------------------------------
+onstart:
+    print(f"{cyan}\n--- Workflow started! ---\n\n{prolog}\n\n{end}")
+
+
+onsuccess:
+    print(f"{cyan}\n{msg}\n{epilog}\n--- Workflow finished! ---\n\n{end}")
+
+
+onerror:
+    print(f"{cyan}\n{msg}\n{epilog}\n --- An error occurred! ---\n\n{end}")
+
+
+# -----------------------------------------------------
+# target rules
+# -----------------------------------------------------
+rule all:
+    input:
+        samples.index.to_list(),
+    default_target: True
