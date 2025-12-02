@@ -1,5 +1,6 @@
 $schema: "https://json-schema.org/draft/2020-12/schema"
-description: Schema for the configuration file of the assembly post-processing workflow
+title: "Config Schema"
+description: "Config schema for the assembly post-processing workflow"
 type: object
 properties:
   samplesheet:
@@ -7,4 +8,4 @@ properties:
     description: Path to the sample sheet file
 
 required:
-- samplesheet
+  - samplesheet
