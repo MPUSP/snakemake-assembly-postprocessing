@@ -38,7 +38,8 @@ rule prepare_yaml_files:
         pd_samples=samples,
     log:
         os.path.join(
-            OUTDIR, "annotation/pgap/prepare_files/logs/{sample}_prepare_yaml_files.log"
+            OUTDIR,
+            "annotation/pgap/prepare_files/logs/{sample}_prepare_yaml_files.log",
         ),
     script:
         "../scripts/prepare_yaml_files.py"
