@@ -5,8 +5,8 @@
 This workflow requires `fasta` input data.
 The samplesheet table has the following layout:
 
-| sample      | species  | strain                  | id_prefix   | file   |
-| ----------- | ------------ | ---------------------------------- | ------------- | ------------- |
+| sample | species | strain | id_prefix | file |
+| ----------- | ------------ | ------------- | ------------- | ------------- |
 | EC2224 | "Streptococcus pyogenes" | SF370 | Spy | assembly.fasta |
 
 ### Execution
@@ -22,11 +22,11 @@ Adjust options in the default config file `config/config.yml`.
 Before running the entire workflow, perform a dry run using:
 
 ```bash
-snakemake --cores 3 --sdm conda --directory .test --dry-run
+snakemake --cores 1 --sdm conda --directory .test --dry-run
 ```
 
 To run the workflow with test files using **conda**:
 
 ```bash
-snakemake --cores 3 --sdm conda --directory .test
+snakemake --cores 1 --sdm conda --directory .test
 ```

@@ -1,0 +1,21 @@
+topology: "circular"
+location: "chromosome"
+organism:
+  genus_species: ""
+  strain: ""
+contact_info:
+  last_name: ""
+  first_name: ""
+  email: ""
+  organization: ""
+  department: ""
+  street: ""
+  city: ""
+  state: ""
+  postal_code: ""
+  country: ""
+authors:
+  - author:
+      last_name: "last_name"
+      first_name: "first_name"
+locus_tag_prefix: ""

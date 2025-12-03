@@ -13,6 +13,42 @@ The usage of this workflow is described in the [Snakemake Workflow Catalog](http
 
 If you use this workflow in a paper, don't forget to give credits to the authors by citing the URL of this repository.
 
+## Workflow overview
+
+1. Parse `samples.csv` table containing the samples's meta data (`python`)
+2. Annotate assemblies using NCBI's Prokaryotic Genome Annotation Pipeline ([PGAP](https://github.com/ncbi/pgap))
+
+## Requirements
+
+- [PGAP](https://github.com/ncbi/pgap)
+
+## Installation
+
+**Step 1: Clone this repository**
+
+```bash
+git clone https://github.com/MPUSP/snakemake-assembly-postprocessing.git
+cd snakemake-assembly-postprocessing
+```
+
+**Step 2: Install dependencies**
+
+It is recommended to install snakemake and run the workflow with `conda` or `mamba`. [Miniforge](https://conda-forge.org/download/) is the preferred conda-forge installer and includes `conda`, `mamba` and their dependencies.
+
+**Step 3: Create snakemake environment**
+
+This step creates a new conda environment called `snakemake-assembly-postprocessing`.
+
+```bash
+mamba create -c conda-forge -c bioconda -n snakemake-assembly-postprocessing snakemake pandas
+conda activate snakemake-assembly-postprocessing
+```
+
+**Step 4: Install PGAP**
+
+- PGAP can be downloaded from https://github.com/ncbi/pgap. Please follow the installation instructions there.
+- Define the path to the `pgap.py` script (located in the `scripts` folder) in the `config` file (recommended: `./resources`)
+
 ## Authors
 
 - Dr. Rina Ahmed-Begrich
@@ -24,5 +60,7 @@ If you use this workflow in a paper, don't forget to give credits to the authors
   - github page: https://github.com/m-jahn
 
 ## References
+
+> Li W, O'Neill KR, Haft DH, DiCuccio M, Chetvernin V, Badretdin A, Coulouris G, Chitsaz F, Derbyshire MK, Durkin AS, Gonzales NR, Gwadz M, Lanczycki CJ, Song JS, Thanki N, Wang J, Yamashita RA, Yang M, Zheng C, Marchler-Bauer A, Thibaud-Nissen F. _RefSeq: Expanding the Prokaryotic Genome Annotation Pipeline reach with protein family model curation._ Nucleic Acids Res, **2021** Jan 8;49(D1):D1020-D1028. https://doi.org/10.1093/nar/gkaa1105
 
 > Köster, J., Mölder, F., Jablonski, K. P., Letcher, B., Hall, M. B., Tomkins-Tinch, C. H., Sochat, V., Forster, J., Lee, S., Twardziok, S. O., Kanitz, A., Wilm, A., Holtgrewe, M., Rahmann, S., & Nahnsen, S. _Sustainable data analysis with Snakemake_. F1000Research, 10:33, 10, 33, **2021**. https://doi.org/10.12688/f1000research.29032.2.

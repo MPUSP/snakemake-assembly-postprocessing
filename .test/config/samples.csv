@@ -1,0 +1,2 @@
+sample,species,strain,id_prefix,file
+EC2224,"Streptococcus pyogenes",SF370,SPY,"data/assembly.fasta"

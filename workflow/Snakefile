@@ -3,11 +3,14 @@
 # microbial genome assemblies.                          #
 # ----------------------------------------------------- #
 
+import os
+from datetime import datetime
+
 
 # -----------------------------------------------------
 # container definition (optional)
 # -----------------------------------------------------
-container: "oras://ghcr.io/mpusp/snakemake-assembly-post-processing:latest"
+container: "oras://ghcr.io/mpusp/snakemake-assembly-postprocessing:latest"
 
 
 # -----------------------------------------------------
@@ -16,10 +19,18 @@ container: "oras://ghcr.io/mpusp/snakemake-assembly-post-processing:latest"
 configfile: "config/config.yml"
 
 
+# set outout directory
+OUTDIR = config.get("outdir", "")
+
+if not OUTDIR:
+    OUTDIR = f"{os.getcwd()}/results"
+
+
 # -----------------------------------------------------
 # load rules
 # -----------------------------------------------------
 include: "rules/common.smk"
+include: "rules/annotate.smk"
 
 
 # -----------------------------------------------------
@@ -32,11 +43,6 @@ end = "\033[0m"
 
 msg = f"""\nSnakemake-assembly-postprocessing: A Snakemake workflow 
 for the post-processing of microbial genome assemblies."""
-
-OUTDIR = config.get("outdir", "")
-
-if not OUTDIR:
-    OUTDIR = f"{os.getcwd()}/results"
 
 prolog = f"Output directory: {OUTDIR}"
 year = datetime.today().year
@@ -67,5 +73,8 @@ onerror:
 # -----------------------------------------------------
 rule all:
     input:
-        samples.index.to_list(),
+        expand(
+            os.path.join(OUTDIR, "annotation/pgap/{sample}/{sample}.gff"),
+            sample=samples.index,
+        ),
     default_target: True

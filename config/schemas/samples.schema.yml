@@ -1,3 +1,26 @@
 $schema: "https://json-schema.org/draft/2020-12/schema"
 title: "Sample Schema"
 description: "Sample schema for the assembly post-processing workflow"
+type: object
+properties:
+  sample:
+    type: string
+    description: Unique identifier for the sample
+  species:
+    type: string
+    description: Species name of the sample
+  strain:
+    type: string
+    description: Strain name of the sample
+  id_prefix:
+    type: string
+    description: Identifier prefix for the locus_tag of annotated genes of the sample
+  file:
+    type: string
+    description: Path to the assembly file for the sample
+required:
+  - sample
+  - species
+  - strain
+  - id_prefix
+  - file

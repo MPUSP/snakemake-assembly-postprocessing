@@ -6,6 +6,35 @@ properties:
   samplesheet:
     type: string
     description: Path to the sample sheet file
+  outdir:
+    type: string
+    description: Output directory for results
+  pgap:
+    type: object
+    properties:
+      bin:
+        type: string
+        description: Path to the PGAP script
+      use_yaml_config:
+        type: boolean
+        description: Whether to use YAML configuration for PGAP
+      prepare_yaml_files:
+        type: object
+        properties:
+          generic:
+            type: string
+            description: Path to the generic YAML configuration file
+          submol:
+            type: string
+            description: Path to the submol YAML configuration file
+        required:
+          - generic
+          - submol
+    required:
+      - bin
+      - use_yaml_config
+      - prepare_yaml_files
 
 required:
   - samplesheet
+  - pgap
