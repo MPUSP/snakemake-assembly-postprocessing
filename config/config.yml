@@ -1,5 +1,4 @@
 samplesheet: "config/samples.csv"
-outdir: "results"
 
 pgap:
   bin: "path/to/pgap.py"

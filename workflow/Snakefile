@@ -20,10 +20,7 @@ configfile: "config/config.yml"
 
 
 # set outout directory
-OUTDIR = config.get("outdir", "")
-
-if not OUTDIR:
-    OUTDIR = f"{os.getcwd()}/results"
+OUTDIR = f"{os.getcwd()}/results"
 
 
 # -----------------------------------------------------

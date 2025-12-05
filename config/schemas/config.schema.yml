@@ -6,9 +6,6 @@ properties:
   samplesheet:
     type: string
     description: Path to the sample sheet file
-  outdir:
-    type: string
-    description: Output directory for results
   pgap:
     type: object
     properties:
