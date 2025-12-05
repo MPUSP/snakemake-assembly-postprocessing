@@ -12,3 +12,7 @@ pgap:
 prokka:
   center: ""
   extra: "--addgenes"
+
+bakta:
+  db: "light"
+  extra: ""

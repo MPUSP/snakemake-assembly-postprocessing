@@ -15,6 +15,7 @@ properties:
     enum:
       - prokka
       - pgap
+      - bakta
   pgap:
     type: object
     properties:
@@ -52,9 +53,22 @@ properties:
     required:
       - center
       - extra
+  bakta:
+    type: object
+    properties:
+      db:
+        type: string
+        description: Bakta database type, one of 'full', 'light'
+      extra:
+        type: string
+        description: Extra command-line arguments for Bakta
+    required:
+      - db
+      - extra
 
 required:
   - samplesheet
   - tool
   - pgap
   - prokka
+  - bakta
