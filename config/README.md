@@ -5,9 +5,9 @@
 This workflow requires `fasta` input data.
 The samplesheet table has the following layout:
 
-| sample | species | strain | id_prefix | file |
-| ----------- | ------------ | ------------- | ------------- | ------------- |
-| EC2224 | "Streptococcus pyogenes" | SF370 | Spy | assembly.fasta |
+| sample | species                  | strain | id_prefix | file           |
+| ------ | ------------------------ | ------ | --------- | -------------- |
+| EC2224 | "Streptococcus pyogenes" | SF370  | Spy       | assembly.fasta |
 
 ### Execution
 

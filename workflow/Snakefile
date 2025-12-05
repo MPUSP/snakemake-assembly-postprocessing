@@ -19,7 +19,7 @@ container: "oras://ghcr.io/mpusp/snakemake-assembly-postprocessing:latest"
 configfile: "config/config.yml"
 
 
-# set outout directory
+# set output directory
 OUTDIR = config.get("outdir", "")
 
 if not OUTDIR:
@@ -74,7 +74,8 @@ onerror:
 rule all:
     input:
         expand(
-            os.path.join(OUTDIR, "annotation/pgap/{sample}/{sample}.gff"),
+            os.path.join(OUTDIR, "annotation/{tool}/{sample}/{sample}.gff"),
+            tool=config["tool"],
             sample=samples.index,
         ),
     default_target: True
