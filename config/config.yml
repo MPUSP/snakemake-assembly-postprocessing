@@ -1,5 +1,6 @@
 samplesheet: "config/samples.csv"
 outdir: "results"
+tool: "prokka"
 
 pgap:
   bin: "path/to/pgap.py"
@@ -7,3 +8,7 @@ pgap:
   prepare_yaml_files:
     generic: "config/generic.yaml"
     submol: "config/submol.yaml"
+
+prokka:
+  center: ""
+  extra: "--addgenes"

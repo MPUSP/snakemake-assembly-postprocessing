@@ -9,6 +9,12 @@ properties:
   outdir:
     type: string
     description: Output directory for results
+  tool:
+    type: string
+    description: Annotation tool to use
+    enum:
+      - prokka
+      - pgap
   pgap:
     type: object
     properties:
@@ -34,7 +40,21 @@ properties:
       - bin
       - use_yaml_config
       - prepare_yaml_files
+  prokka:
+    type: object
+    properties:
+      center:
+        type: string
+        description: Center name for Prokka annotation (used in sequence IDs)
+      extra:
+        type: string
+        description: Extra command-line arguments for Prokka
+    required:
+      - center
+      - extra
 
 required:
   - samplesheet
+  - tool
   - pgap
+  - prokka
