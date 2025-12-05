@@ -2,15 +2,11 @@ rule get_fasta:
     input:
         get_fasta,
     output:
-        fasta=os.path.join(
-            OUTDIR, "annotation/pgap/prepare_files/{sample}/genome.fasta"
-        ),
+        fasta="results/annotation/pgap/prepare_files/{sample}/genome.fasta",
     conda:
         "../envs/base.yml"
     log:
-        os.path.join(
-            OUTDIR, "annotation/pgap/prepare_files/logs/{sample}_get_fasta.log"
-        ),
+        "results/annotation/pgap/prepare_files/logs/{sample}_get_fasta.log",
     shell:
         "INPUT=$(realpath {input}); "
         "ln -s ${{INPUT}} {output}; "
@@ -21,12 +17,8 @@ rule prepare_yaml_files:
     input:
         fasta=rules.get_fasta.output.fasta,
     output:
-        input_yaml=os.path.join(
-            OUTDIR, "annotation/pgap/prepare_files/{sample}/input.yaml"
-        ),
-        submol_yaml=os.path.join(
-            OUTDIR, "annotation/pgap/prepare_files/{sample}/submol.yaml"
-        ),
+        input_yaml="results/annotation/pgap/prepare_files/{sample}/input.yaml",
+        submol_yaml="results/annotation/pgap/prepare_files/{sample}/submol.yaml",
     conda:
         "../envs/base.yml"
     params:
@@ -37,10 +29,7 @@ rule prepare_yaml_files:
         sample="{sample}",
         pd_samples=samples,
     log:
-        os.path.join(
-            OUTDIR,
-            "annotation/pgap/prepare_files/logs/{sample}_prepare_yaml_files.log",
-        ),
+        "results/annotation/pgap/prepare_files/logs/{sample}_prepare_yaml_files.log",
     script:
         "../scripts/prepare_yaml_files.py"
 
@@ -53,7 +42,7 @@ rule annotate_pgap:
             otherwise=rules.get_fasta.output.fasta,
         ),
     output:
-        os.path.join(OUTDIR, "annotation/pgap/{sample}/{sample}.gff"),
+        "results/annotation/pgap/{sample}/{sample}.gff",
     conda:
         "../envs/base.yml"
     message:
@@ -65,7 +54,7 @@ rule annotate_pgap:
         outdir=lambda wc, output: os.path.dirname(output[0]),
     threads: 1
     log:
-        os.path.join(OUTDIR, "annotation/pgap/logs/{sample}_pgap.log"),
+        "results/annotation/pgap/logs/{sample}_pgap.log",
     shell:
         "rm -rf {params.outdir}; "
         "if [ {params.use_yaml_config} == 'True' ]; then "
@@ -91,7 +80,7 @@ rule annotate_prokka:
     input:
         fasta=rules.get_fasta.output.fasta,
     output:
-        os.path.join(OUTDIR, "annotation/prokka/{sample}/{sample}.gff"),
+        "results/annotation/prokka/{sample}/{sample}.gff",
     conda:
         "../envs/prokka.yml"
     message:
@@ -106,7 +95,7 @@ rule annotate_prokka:
         extra=config["prokka"]["extra"],
     threads: workflow.cores * 0.25
     log:
-        os.path.join(OUTDIR, "annotation/prokka/logs/{sample}_prokka.log"),
+        "results/annotation/prokka/logs/{sample}_prokka.log",
     shell:
         """
         prokka \
@@ -124,7 +113,7 @@ rule annotate_prokka:
 
 rule get_bakta_db:
     output:
-        db=directory(os.path.join(OUTDIR, "annotation/bakta/database/db")),
+        db=directory("results/annotation/bakta/database/db"),
     conda:
         "../envs/bakta.yml"
     message:
@@ -133,7 +122,7 @@ rule get_bakta_db:
         db=config["bakta"]["db"],
     threads: workflow.cores * 0.25
     log:
-        os.path.join(OUTDIR, "annotation/bakta/database/db.log"),
+        "results/annotation/bakta/database/db.log",
     shell:
         """
         echo 'The most recent of the following available bakta DBs is downloaded:' > {log};
@@ -147,7 +136,7 @@ rule annotate_bakta:
         fasta=rules.get_fasta.output.fasta,
         db=rules.get_bakta_db.output.db,
     output:
-        os.path.join(OUTDIR, "annotation/bakta/{sample}/{sample}.gff"),
+        "results/annotation/bakta/{sample}/{sample}.gff",
     conda:
         "../envs/bakta.yml"
     message:
@@ -162,7 +151,7 @@ rule annotate_bakta:
         extra=config["bakta"]["extra"],
     threads: workflow.cores * 0.25
     log:
-        os.path.join(OUTDIR, "annotation/bakta/logs/{sample}_bakta.log"),
+        "results/annotation/bakta/logs/{sample}_bakta.log",
     shell:
         """
         bakta \
