@@ -16,7 +16,10 @@ If you use this workflow in a paper, don't forget to give credits to the authors
 ## Workflow overview
 
 1. Parse `samples.csv` table containing the samples's meta data (`python`)
-2. Annotate assemblies using NCBI's Prokaryotic Genome Annotation Pipeline ([PGAP](https://github.com/ncbi/pgap))
+2. Annotate assemblies using one of the following tools:
+   1. NCBI's Prokaryotic Genome Annotation Pipeline ([PGAP](https://github.com/ncbi/pgap)). Note: needs to be installed manually
+   2. [prokka](https://github.com/tseemann/prokka), a fast and light-weight prokaryotic annotation tool
+   3. [bakta](https://github.com/oschwengers/bakta), a fast, alignment-free annotation tool. Note: Bakta will automatically download its companion database from zenodo (light: 1.5 GB, full: 40 GB)
 
 ## Requirements
 

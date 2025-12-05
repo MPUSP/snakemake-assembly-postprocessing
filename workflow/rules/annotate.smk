@@ -57,7 +57,7 @@ rule annotate_pgap:
     conda:
         "../envs/base.yml"
     message:
-        """--- Run PGAP annotation for sample {wildcards.sample} ---"""
+        """--- Running PGAP annotation for sample {wildcards.sample} ---"""
     params:
         pgap=config["pgap"]["bin"],
         use_yaml_config=config["pgap"]["use_yaml_config"],
@@ -85,3 +85,95 @@ rule annotate_pgap:
         "--no-self-update "
         "-g {input} -s '{params.species}' &>> {log}; "
         "fi; "
+
+
+rule annotate_prokka:
+    input:
+        fasta=rules.get_fasta.output.fasta,
+    output:
+        os.path.join(OUTDIR, "annotation/prokka/{sample}/{sample}.gff"),
+    conda:
+        "../envs/prokka.yml"
+    message:
+        """--- Running PROKKA annotation for sample {wildcards.sample} ---"""
+    params:
+        prefix=lambda wc: wc.sample,
+        locustag=lambda wc: samples.loc[wc.sample]["id_prefix"],
+        genus=lambda wc: samples.loc[wc.sample]["species"].split(" ")[0],
+        species=lambda wc: samples.loc[wc.sample]["species"].split(" ")[1],
+        strain=lambda wc: samples.loc[wc.sample]["strain"],
+        outdir=lambda wc, output: os.path.dirname(output[0]),
+        extra=config["prokka"]["extra"],
+    threads: workflow.cores * 0.25
+    log:
+        os.path.join(OUTDIR, "annotation/prokka/logs/{sample}_prokka.log"),
+    shell:
+        """
+        prokka \
+          --locustag {params.locustag} \
+          --genus {params.genus} \
+          --species {params.species} \
+          --strain {params.strain} \
+          --prefix {params.prefix} \
+          --outdir {params.outdir} \
+          --force {params.extra} \
+          --cpus {threads} \
+          {input.fasta} &> {log}
+        """
+
+
+rule get_bakta_db:
+    output:
+        db=directory(os.path.join(OUTDIR, "annotation/bakta/database/db")),
+    conda:
+        "../envs/bakta.yml"
+    message:
+        """--- Getting BAKTA database for annotation ---"""
+    params:
+        db=config["bakta"]["db"],
+    threads: workflow.cores * 0.25
+    log:
+        os.path.join(OUTDIR, "annotation/bakta/database/db.log"),
+    shell:
+        """
+        echo 'The most recent of the following available bakta DBs is downloaded:' > {log};
+        bakta_db list > {log};
+        bakta_db download --output {output.db} --type {params.db} &> {log}
+        """
+
+
+rule annotate_bakta:
+    input:
+        fasta=rules.get_fasta.output.fasta,
+        db=rules.get_bakta_db.output.db,
+    output:
+        os.path.join(OUTDIR, "annotation/bakta/{sample}/{sample}.gff"),
+    conda:
+        "../envs/bakta.yml"
+    message:
+        """--- Running BAKTA annotation for sample {wildcards.sample} ---"""
+    params:
+        prefix=lambda wc: wc.sample,
+        locustag=lambda wc: samples.loc[wc.sample]["id_prefix"],
+        species=lambda wc: samples.loc[wc.sample]["species"],
+        strain=lambda wc: samples.loc[wc.sample]["strain"],
+        outdir=lambda wc, output: os.path.dirname(output[0]),
+        subdir="db" if config["bakta"]["db"] == "full" else "db-light",
+        extra=config["bakta"]["extra"],
+    threads: workflow.cores * 0.25
+    log:
+        os.path.join(OUTDIR, "annotation/bakta/logs/{sample}_bakta.log"),
+    shell:
+        """
+        bakta \
+          --db {input.db}/{params.subdir} \
+          --prefix {params.prefix} \
+          --output {params.outdir} \
+          --locus-tag {params.locustag} \
+          --species '{params.species}' \
+          --strain {params.strain} \
+          --threads {threads} \
+          --force {params.extra} \
+          {input.fasta} &> {log};
+          mv {output}3 {output}
+        """

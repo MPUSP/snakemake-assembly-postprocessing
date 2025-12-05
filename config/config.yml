@@ -1,4 +1,5 @@
 samplesheet: "config/samples.csv"
+tool: "prokka"
 
 pgap:
   bin: "path/to/pgap.py"
@@ -6,3 +7,11 @@ pgap:
   prepare_yaml_files:
     generic: "config/generic.yaml"
     submol: "config/submol.yaml"
+
+prokka:
+  center: ""
+  extra: "--addgenes"
+
+bakta:
+  db: "light"
+  extra: "--keep-contig-headers --compliant"

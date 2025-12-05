@@ -71,7 +71,8 @@ onerror:
 rule all:
     input:
         expand(
-            os.path.join(OUTDIR, "annotation/pgap/{sample}/{sample}.gff"),
+            os.path.join(OUTDIR, "annotation/{tool}/{sample}/{sample}.gff"),
+            tool=config["tool"],
             sample=samples.index,
         ),
     default_target: True
