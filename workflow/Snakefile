@@ -24,6 +24,7 @@ configfile: "config/config.yml"
 # -----------------------------------------------------
 include: "rules/common.smk"
 include: "rules/annotate.smk"
+include: "rules/qc.smk"
 
 
 # -----------------------------------------------------
@@ -67,8 +68,7 @@ onerror:
 rule all:
     input:
         expand(
-            "results/annotation/{tool}/{sample}/{sample}.gff",
+            "results/qc/quast/{tool}/report.txt",
             tool=config["tool"],
-            sample=samples.index,
         ),
     default_target: True

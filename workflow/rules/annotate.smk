@@ -80,7 +80,8 @@ rule annotate_prokka:
     input:
         fasta=rules.get_fasta.output.fasta,
     output:
-        "results/annotation/prokka/{sample}/{sample}.gff",
+        gff="results/annotation/prokka/{sample}/{sample}.gff",
+        fasta="results/annotation/prokka/{sample}/{sample}.fna",
     conda:
         "../envs/prokka.yml"
     message:
@@ -113,21 +114,35 @@ rule annotate_prokka:
 
 rule get_bakta_db:
     output:
-        db=directory("results/annotation/bakta/database/db"),
+        db=branch(
+            lookup(dpath="bakta/download_db", within=config),
+            cases={
+                "full": directory("results/annotation/bakta/database/db"),
+                "light": directory("results/annotation/bakta/database/db-light"),
+                "none": directory("results/annotation/bakta/database/custom"),
+            },
+        ),
     conda:
         "../envs/bakta.yml"
     message:
         """--- Getting BAKTA database for annotation ---"""
     params:
-        db=config["bakta"]["db"],
+        download_db=config["bakta"]["download_db"],
+        existing_db=config["bakta"]["existing_db"],
+        outdir=lambda wc, output: os.path.dirname(output[0]),
     threads: workflow.cores * 0.25
     log:
         "results/annotation/bakta/database/db.log",
     shell:
         """
-        echo 'The most recent of the following available bakta DBs is downloaded:' > {log};
-        bakta_db list > {log};
-        bakta_db download --output {output.db} --type {params.db} &> {log}
+        if [ {params.download_db} != 'none' ]; then
+          echo 'The most recent of the following available Bakta DBs is downloaded:' > {log};
+          bakta_db list >> {log};
+          bakta_db download --output {params.outdir} --type {params.download_db} &>> {log};
+        else
+          echo 'Using Bakta DB from supplied input dir: {params.existing_db}' > {log};
+          ln -s {params.existing_db} {output.db}
+        fi
         """
 
 
@@ -136,7 +151,8 @@ rule annotate_bakta:
         fasta=rules.get_fasta.output.fasta,
         db=rules.get_bakta_db.output.db,
     output:
-        "results/annotation/bakta/{sample}/{sample}.gff",
+        gff="results/annotation/bakta/{sample}/{sample}.gff",
+        fasta="results/annotation/bakta/{sample}/{sample}.fna",
     conda:
         "../envs/bakta.yml"
     message:
@@ -147,7 +163,6 @@ rule annotate_bakta:
         species=lambda wc: samples.loc[wc.sample]["species"],
         strain=lambda wc: samples.loc[wc.sample]["strain"],
         outdir=lambda wc, output: os.path.dirname(output[0]),
-        subdir="db" if config["bakta"]["db"] == "full" else "db-light",
         extra=config["bakta"]["extra"],
     threads: workflow.cores * 0.25
     log:
@@ -155,7 +170,7 @@ rule annotate_bakta:
     shell:
         """
         bakta \
-          --db {input.db}/{params.subdir} \
+          --db {input.db} \
           --prefix {params.prefix} \
           --output {params.outdir} \
           --locus-tag {params.locustag} \
@@ -164,5 +179,5 @@ rule annotate_bakta:
           --threads {threads} \
           --force {params.extra} \
           {input.fasta} &> {log};
-          mv {output}3 {output}
+          mv {output.gff}3 {output.gff}
         """

@@ -1,5 +1,5 @@
 samplesheet: "config/samples.csv"
-tool: "prokka"
+tool: ["prokka"]
 
 pgap:
   bin: "path/to/pgap.py"
@@ -13,5 +13,10 @@ prokka:
   extra: "--addgenes"
 
 bakta:
-  db: "light"
+  download_db: "light"
+  existing_db: ""
   extra: "--keep-contig-headers --compliant"
+
+quast:
+  reference: ""
+  extra: ""

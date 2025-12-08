@@ -1,0 +1,7 @@
+name: base
+channels:
+  - conda-forge
+  - bioconda
+  - nodefaults
+dependencies:
+  - quast=5.3.0

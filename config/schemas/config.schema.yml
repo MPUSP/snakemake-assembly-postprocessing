@@ -7,12 +7,14 @@ properties:
     type: string
     description: Path to the sample sheet file
   tool:
-    type: string
+    type: array
     description: Annotation tool to use
-    enum:
-      - prokka
-      - pgap
-      - bakta
+    items:
+      type: string
+      enum:
+        - prokka
+        - pgap
+        - bakta
   pgap:
     type: object
     properties:
@@ -53,15 +55,28 @@ properties:
   bakta:
     type: object
     properties:
-      db:
+      download_db:
         type: string
-        description: Bakta database type, one of 'full', 'light'
+        description: Bakta database type, one of 'full', 'light', or 'none' if existing is used
+      existing_db:
+        type: string
+        description: Path to an existing Bakta database (optional)
       extra:
         type: string
         description: Extra command-line arguments for Bakta
     required:
-      - db
+      - download_db
+      - existing_db
       - extra
+  quast:
+    type: object
+    properties:
+      reference:
+        type: string
+        description: Path to the reference genome for QUAST
+      extra:
+        type: string
+        description: Extra command-line arguments for QUAST
 
 required:
   - samplesheet
@@ -69,3 +84,4 @@ required:
   - pgap
   - prokka
   - bakta
+  - quast

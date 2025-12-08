@@ -23,6 +23,21 @@ def get_fasta(wildcards):
     sample = wildcards.sample
     if sample not in samples.index:
         raise ValueError(f"Sample {sample} not found in samplesheet.")
-
     # return the fasta file path
     return samples.loc[sample, "file"]
+
+
+def get_quast_fasta(wildcards):
+    return expand(
+        "results/annotation/{tool}/{sample}/{sample}.fna",
+        tool=wildcards.tool,
+        sample=samples.index,
+    )
+
+
+def get_quast_gff(wildcards):
+    return expand(
+        "results/annotation/{tool}/{sample}/{sample}.gff",
+        tool=wildcards.tool,
+        sample=samples.index,
+    )
