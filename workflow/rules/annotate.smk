@@ -42,7 +42,8 @@ rule annotate_pgap:
             otherwise=rules.get_fasta.output.fasta,
         ),
     output:
-        "results/annotation/pgap/{sample}/{sample}.gff",
+        gff="results/annotation/pgap/{sample}/{sample}.gff",
+        fasta="results/annotation/pgap/{sample}/{sample}.fna",
     conda:
         "../envs/base.yml"
     message:

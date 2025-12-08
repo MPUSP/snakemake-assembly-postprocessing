@@ -21,7 +21,7 @@ samples = snakemake.params["pd_samples"]
 
 
 # define helper functions
-def read_yaml_to_dict(filepath):
+def read_yaml_to_dict(filepath: str) -> None:
     try:
         with open(filepath, "r") as f:
             return yaml.safe_load(f)
@@ -35,32 +35,31 @@ def read_yaml_to_dict(filepath):
     return None
 
 
-def write_dict_to_yaml(dic, filepath):
+def write_dict_to_yaml(outdict: dict, filepath: str) -> None:
     try:
         with open(filepath, "w") as f:
-            yaml.safe_dump(dic, f, default_flow_style=False)
+            yaml.safe_dump(outdict, f, default_flow_style=False)
         sys.stderr.write(f"Wrote YAML file: {filepath}\n")
     except Exception as e:
         sys.stderr.write(f"Error writing YAML file {filepath}: {e}\n")
 
 
-generic_dic = read_yaml_to_dict(generic_template)
-submol_dic = read_yaml_to_dict(submol_template)
+generic_dict = read_yaml_to_dict(generic_template)
+submol_dict = read_yaml_to_dict(submol_template)
 
-generic_dic["fasta"]["location"] = os.path.basename(fasta)
-generic_dic["submol"]["location"] = submol_yaml
+generic_dict["fasta"]["location"] = os.path.abspath(fasta)
+generic_dict["submol"]["location"] = os.path.abspath(submol_yaml)
 
 if not organism:
     organism = samples.loc[sample]["species"]
 
-submol_dic["organism"]["genus_species"] = organism
-
-submol_dic["organism"]["strain"] = samples.loc[sample]["strain"]
+submol_dict["organism"]["genus_species"] = organism
+submol_dict["organism"]["strain"] = samples.loc[sample]["strain"]
 
 if not locus_tag:
     locus_tag = "Spy"
-submol_dic["locus_tag_prefix"] = locus_tag
+submol_dict["locus_tag_prefix"] = locus_tag
 
-write_dict_to_yaml(generic_dic, input_yaml)
-write_dict_to_yaml(submol_dic, submol_yaml)
+write_dict_to_yaml(generic_dict, input_yaml)
+write_dict_to_yaml(submol_dict, submol_yaml)
 sys.stderr.write(f"Module 'prepare yaml files' finished successfully!")
