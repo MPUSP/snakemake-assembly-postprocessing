@@ -18,5 +18,6 @@ bakta:
   extra: "--keep-contig-headers --compliant"
 
 quast:
-  reference: ""
+  reference_fasta: ""
+  reference_gff: ""
   extra: ""

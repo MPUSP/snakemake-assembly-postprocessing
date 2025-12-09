@@ -71,9 +71,12 @@ properties:
   quast:
     type: object
     properties:
-      reference:
+      reference_fasta:
         type: string
         description: Path to the reference genome for QUAST
+      reference_gff:
+        type: string
+        description: Path to the reference annotation for QUAST
       extra:
         type: string
         description: Extra command-line arguments for QUAST
