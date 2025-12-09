@@ -144,7 +144,7 @@ rule get_bakta_db:
           echo 'Using Bakta DB from supplied input dir: {params.existing_db}' > {log};
           ln -s {params.existing_db} {output.db};
           echo 'Update ARMFinderPlus DB using supplied input dir: {params.existing_db}' > {log};
-          amrfinder_update --force_update --database {params.existing_db}/amrfinderplus-db
+          amrfinder_update --force_update --database {params.existing_db}/amrfinderplus-db >> {log}
         fi
         """
 
