@@ -47,7 +47,7 @@ def write_dict_to_yaml(outdict: dict, filepath: str) -> None:
 generic_dict = read_yaml_to_dict(generic_template)
 submol_dict = read_yaml_to_dict(submol_template)
 
-generic_dict["fasta"]["location"] = os.path.abspath(fasta)
+generic_dict["fasta"]["location"] = os.path.basename(fasta)
 generic_dict["submol"]["location"] = os.path.abspath(submol_yaml)
 
 if not organism:

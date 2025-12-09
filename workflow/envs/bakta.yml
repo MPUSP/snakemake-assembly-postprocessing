@@ -1,4 +1,4 @@
-name: base
+name: bakta
 channels:
   - conda-forge
   - bioconda

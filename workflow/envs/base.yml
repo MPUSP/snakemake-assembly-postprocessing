@@ -4,6 +4,6 @@ channels:
   - bioconda
   - nodefaults
 dependencies:
-  - python==3.13.0
-  - pandas==2.3.3
-  - apptainer==1.4.5
+  - python=3.13.0
+  - pandas=2.3.3
+  - apptainer=1.4.5
