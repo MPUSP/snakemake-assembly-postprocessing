@@ -142,7 +142,9 @@ rule get_bakta_db:
           bakta_db download --output {params.outdir} --type {params.download_db} &>> {log};
         else
           echo 'Using Bakta DB from supplied input dir: {params.existing_db}' > {log};
-          ln -s {params.existing_db} {output.db}
+          ln -s {params.existing_db} {output.db};
+          echo 'Update ARMFinderPlus DB using supplied input dir: {params.existing_db}' > {log};
+          amrfinder_update --force_update --database {params.existing_db}/amrfinderplus-db
         fi
         """
 
