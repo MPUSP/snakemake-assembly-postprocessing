@@ -162,7 +162,7 @@ rule annotate_bakta:
         """--- Running BAKTA annotation for sample {wildcards.sample} ---"""
     params:
         prefix=lambda wc: wc.sample,
-        locustag=lambda wc: samples.loc[wc.sample]["id_prefix"],
+        locustag=lambda wc: format_bakta_locustag(samples.loc[wc.sample]["id_prefix"]),
         species=lambda wc: samples.loc[wc.sample]["species"],
         strain=lambda wc: samples.loc[wc.sample]["strain"],
         outdir=lambda wc, output: os.path.dirname(output[0]),

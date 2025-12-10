@@ -1,5 +1,7 @@
 # import basic packages
 import pandas as pd
+import re
+from snakemake import logging
 from snakemake.utils import validate
 
 
@@ -62,3 +64,27 @@ def get_final_input(wildcards):
             tool=config["tool"],
         )
     return inputs
+
+
+# -----------------------------------------------------
+# helper functions
+# -----------------------------------------------------
+def format_bakta_locustag(raw):
+    """Format locustag for BAKTA annotation."""
+    tag = str(raw)
+    # uppercase for BAKTA
+    tag_up = tag.upper()
+    # keep only A-Z0-9
+    cleaned = re.sub(r"[^A-Z0-9]", "", tag_up)
+    if len(cleaned) < 3 or len(cleaned) > 12:
+        raise ValueError(
+            f"locustag '{raw}' -> '{cleaned}' must contain between 3-12 alphanumeric uppercase characters\n"
+        )
+    if not re.match(r"^[A-Z]", cleaned):
+        raise ValueError(f"locustag '{raw}' -> '{cleaned}' must start with a letter")
+    # warn if cleaned tag is different from original
+    if cleaned != tag:
+        logger.warning(
+            f"\nlocustag '{raw}' converted to '{cleaned}' to meet BAKTA requirements (between 3 and 12 alphanumeric uppercase characters, start with a letter)\n"
+        )
+    return cleaned
