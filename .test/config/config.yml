@@ -1,5 +1,5 @@
 samplesheet: "config/samples.csv"
-outdir: "results"
+tool: ["prokka"]
 
 pgap:
   bin: "path/to/pgap.py"
@@ -7,3 +7,23 @@ pgap:
   prepare_yaml_files:
     generic: "config/generic.yaml"
     submol: "config/submol.yaml"
+
+prokka:
+  center: ""
+  extra: "--addgenes"
+
+bakta:
+  download_db: "light"
+  existing_db: ""
+  extra: "--keep-contig-headers --compliant"
+
+quast:
+  reference_fasta: ""
+  reference_gff: ""
+  extra: ""
+
+panaroo:
+  skip: False
+  remove_source: "cmsearch"
+  remove_feature: "tRNA|rRNA|ncRNA|exon|sequence_feature"
+  extra: "--clean-mode strict --remove-invalid-genes"

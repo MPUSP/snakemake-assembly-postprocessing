@@ -1,9 +1,7 @@
-name: base
+name: quast
 channels:
   - conda-forge
   - bioconda
   - nodefaults
 dependencies:
-  - python=3.13.0
-  - pandas=2.3.3
-  - apptainer=1.4.5
+  - quast=5.3.0

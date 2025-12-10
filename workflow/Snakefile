@@ -19,18 +19,12 @@ container: "oras://ghcr.io/mpusp/snakemake-assembly-postprocessing:latest"
 configfile: "config/config.yml"
 
 
-# set outout directory
-OUTDIR = config.get("outdir", "")
-
-if not OUTDIR:
-    OUTDIR = f"{os.getcwd()}/results"
-
-
 # -----------------------------------------------------
 # load rules
 # -----------------------------------------------------
 include: "rules/common.smk"
 include: "rules/annotate.smk"
+include: "rules/qc.smk"
 
 
 # -----------------------------------------------------
@@ -44,7 +38,7 @@ end = "\033[0m"
 msg = f"""\nSnakemake-assembly-postprocessing: A Snakemake workflow 
 for the post-processing of microbial genome assemblies."""
 
-prolog = f"Output directory: {OUTDIR}"
+prolog = f"Output directory: ./results"
 year = datetime.today().year
 
 epilog = f"""
@@ -73,8 +67,5 @@ onerror:
 # -----------------------------------------------------
 rule all:
     input:
-        expand(
-            os.path.join(OUTDIR, "annotation/pgap/{sample}/{sample}.gff"),
-            sample=samples.index,
-        ),
+        get_final_input,
     default_target: True

@@ -1,5 +1,7 @@
 # import basic packages
 import pandas as pd
+import re
+from snakemake import logging
 from snakemake.utils import validate
 
 
@@ -23,6 +25,66 @@ def get_fasta(wildcards):
     sample = wildcards.sample
     if sample not in samples.index:
         raise ValueError(f"Sample {sample} not found in samplesheet.")
-
-    # return the fasta file path
     return samples.loc[sample, "file"]
+
+
+def get_quast_fasta(wildcards):
+    return expand(
+        "results/annotation/{tool}/{sample}/{sample}.fna",
+        tool=wildcards.tool,
+        sample=samples.index,
+    )
+
+
+def get_panaroo_gff(wildcards):
+    return expand(
+        "results/qc/panaroo/{tool}/prepare/{sample}.gff",
+        tool=wildcards.tool,
+        sample=samples.index,
+    )
+
+
+def get_panaroo_fasta(wildcards):
+    return expand(
+        "results/qc/panaroo/{tool}/prepare/{sample}.fna",
+        tool=wildcards.tool,
+        sample=samples.index,
+    )
+
+
+def get_final_input(wildcards):
+    inputs = []
+    inputs += expand(
+        "results/qc/quast/{tool}/report.txt",
+        tool=config["tool"],
+    )
+    if len(samples.index) > 1 and not config["panaroo"]["skip"]:
+        inputs += expand(
+            "results/qc/panaroo/{tool}/summary_statistics.txt",
+            tool=config["tool"],
+        )
+    return inputs
+
+
+# -----------------------------------------------------
+# helper functions
+# -----------------------------------------------------
+def format_bakta_locustag(raw):
+    """Format locustag for BAKTA annotation."""
+    tag = str(raw)
+    # uppercase for BAKTA
+    tag_up = tag.upper()
+    # keep only A-Z0-9
+    cleaned = re.sub(r"[^A-Z0-9]", "", tag_up)
+    if len(cleaned) < 3 or len(cleaned) > 12:
+        raise ValueError(
+            f"locustag '{raw}' -> '{cleaned}' must contain between 3-12 alphanumeric uppercase characters\n"
+        )
+    if not re.match(r"^[A-Z]", cleaned):
+        raise ValueError(f"locustag '{raw}' -> '{cleaned}' must start with a letter")
+    # warn if cleaned tag is different from original
+    if cleaned != tag:
+        logger.warning(
+            f"\nlocustag '{raw}' converted to '{cleaned}' to meet BAKTA requirements (between 3 and 12 alphanumeric uppercase characters, start with a letter)\n"
+        )
+    return cleaned
