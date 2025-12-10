@@ -40,10 +40,10 @@ This table lists all parameters that can be used to run the workflow.
 | submol | string | Path to the submol YAML configuration file | |
 | **prokka** | | Prokka configuration object | |
 | center | string | Center name for Prokka annotation (used in sequence IDs) | |
-| extra | string | Extra command-line arguments for Prokka | |
+| extra | string | Extra command-line arguments for Prokka | `--addgenes` |
 | **bakta** | | Bakta configuration object | |
 | download_db | string | Bakta database type (`full`, `light`, or `none`) | `light` |
-| existing_db | string | Path to an existing Bakta database (optional). Needs to be combined with `download_db='none'` | |
+| existing_db | string | Path to an existing Bakta database (optional). Needs to be combined with `download_db='none'` | `--keep-contig-headers --compliant` |
 | extra | string | Extra command-line arguments for Bakta | |
 | **quast** | | QUAST configuration object | |
 | reference_fasta | string | Path to the reference genome for QUAST | |
@@ -52,4 +52,4 @@ This table lists all parameters that can be used to run the workflow.
 | **panaroo** | | Panaroo configuration object | |
 | remove_source | string | Source types to remove in Panaroo (regex supported) | `cmsearch` |
 | remove_feature | string | Feature types to remove in Panaroo (regex supported) | `tRNA\|rRNA\|ncRNA\|exon\|sequence_feature` |
-| extra | string | Extra command-line arguments for Panaroo | |
+| extra | string | Extra command-line arguments for Panaroo | `--clean-mode strict --remove-invalid-genes` |
