@@ -26,7 +26,6 @@ If you use this workflow in a paper, don't forget to give credits to the authors
 
 _Workflow overview:_
 
-<!-- include overview-->
 <img src="resources/images/dag.svg" align="center" />
 
 ## Workflow overview
@@ -72,14 +71,14 @@ conda activate snakemake-assembly-postprocessing
 To run the workflow from command line, change the working directory.
 
 ```bash
-cd path/to/snakemake-simple-mapping
+cd snakemake-assembly-postprocessing
 ```
 
 Adjust options in the default config file `config/config.yml`.
 Before running the complete workflow, you can perform a dry run using:
 
 ```bash
-snakemake --dry-run
+snakemake --cores 1 --dry-run
 ```
 
 To run the workflow with test files using **conda**:
