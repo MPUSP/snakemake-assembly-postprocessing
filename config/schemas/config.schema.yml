@@ -83,6 +83,9 @@ properties:
   panaroo:
     type: object
     properties:
+      skip:
+        type: boolean
+        description: Whether to skip Panaroo analysis
       remove_source:
         type: string
         description: Source types to remove in Panaroo (regex supported)

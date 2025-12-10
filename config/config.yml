@@ -23,6 +23,7 @@ quast:
   extra: ""
 
 panaroo:
+  skip: False
   remove_source: "cmsearch"
   remove_feature: "tRNA|rRNA|ncRNA|exon|sequence_feature"
   extra: "--clean-mode strict --remove-invalid-genes"

@@ -58,7 +58,7 @@ def get_final_input(wildcards):
         "results/qc/quast/{tool}/report.txt",
         tool=config["tool"],
     )
-    if len(samples.index) > 1:
+    if len(samples.index) > 1 and not config["panaroo"]["skip"]:
         inputs += expand(
             "results/qc/panaroo/{tool}/summary_statistics.txt",
             tool=config["tool"],
