@@ -8,11 +8,26 @@
 
 A Snakemake workflow for the post-processing of microbial genome assemblies.
 
+- [snakemake-assembly-postprocessing](#snakemake-assembly-postprocessing)
+  - [Usage](#usage)
+  - [Workflow overview](#workflow-overview)
+  - [Installation](#installation)
+  - [Deployment options](#deployment-options)
+  - [Authors](#authors)
+  - [References](#references)
+
 ## Usage
 
 The usage of this workflow is described in the [Snakemake Workflow Catalog](https://snakemake.github.io/snakemake-workflow-catalog/docs/workflows/MPUSP/snakemake-assembly-postprocessing).
 
+Detailed information about input data and workflow configuration can also be found in the [`config/README.md`](config/README.md).
+
 If you use this workflow in a paper, don't forget to give credits to the authors by citing the URL of this repository.
+
+_Workflow overview:_
+
+<!-- include overview-->
+<img src="resources/images/dag.svg" align="center" />
 
 ## Workflow overview
 
@@ -23,10 +38,6 @@ If you use this workflow in a paper, don't forget to give credits to the authors
    3. [bakta](https://github.com/oschwengers/bakta), a fast, alignment-free annotation tool. Note: Bakta will automatically download its companion database from zenodo (light: 1.5 GB, full: 40 GB)
 3. Create a QC report for the assemblies using [Quast](https://github.com/ablab/quast)
 4. Create a pangenome analysis (orthologs/homologs) using [Panaroo](https://gthlab.au/panaroo/)
-
-## Requirements
-
-- [PGAP](https://github.com/ncbi/pgap)
 
 ## Installation
 
@@ -52,8 +63,36 @@ conda activate snakemake-assembly-postprocessing
 
 **Step 4: Install PGAP**
 
+- if you want to use [PGAP](https://github.com/ncbi/pgap) for annotation, it needs to be installed separately
 - PGAP can be downloaded from https://github.com/ncbi/pgap. Please follow the installation instructions there.
 - Define the path to the `pgap.py` script (located in the `scripts` folder) in the `config` file (recommended: `./resources`)
+
+## Deployment options
+
+To run the workflow from command line, change the working directory.
+
+```bash
+cd path/to/snakemake-simple-mapping
+```
+
+Adjust options in the default config file `config/config.yml`.
+Before running the complete workflow, you can perform a dry run using:
+
+```bash
+snakemake --dry-run
+```
+
+To run the workflow with test files using **conda**:
+
+```bash
+snakemake --cores 2 --sdm conda --directory .test
+```
+
+To run the workflow with test files using **apptainer**:
+
+```bash
+snakemake --cores 2 --sdm conda apptainer --directory .test
+```
 
 ## Authors
 
