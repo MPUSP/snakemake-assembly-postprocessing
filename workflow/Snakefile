@@ -67,8 +67,5 @@ onerror:
 # -----------------------------------------------------
 rule all:
     input:
-        expand(
-            "results/qc/quast/{tool}/report.txt",
-            tool=config["tool"],
-        ),
+        get_final_input,
     default_target: True

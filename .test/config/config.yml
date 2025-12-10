@@ -21,3 +21,8 @@ quast:
   reference_fasta: ""
   reference_gff: ""
   extra: ""
+
+panaroo:
+  remove_source: "cmsearch"
+  remove_feature: "tRNA|rRNA|ncRNA|exon|sequence_feature"
+  extra: "--clean-mode strict --remove-invalid-genes"

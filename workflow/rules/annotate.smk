@@ -138,13 +138,13 @@ rule get_bakta_db:
         """
         if [ {params.download_db} != 'none' ]; then
           echo 'The most recent of the following available Bakta DBs is downloaded:' > {log};
-          bakta_db list >> {log};
+          bakta_db list &>> {log};
           bakta_db download --output {params.outdir} --type {params.download_db} &>> {log};
         else
           echo 'Using Bakta DB from supplied input dir: {params.existing_db}' > {log};
           ln -s {params.existing_db} {output.db};
-          echo 'Update ARMFinderPlus DB using supplied input dir: {params.existing_db}' > {log};
-          amrfinder_update --force_update --database {params.existing_db}/amrfinderplus-db >> {log}
+          echo 'Update ARMFinderPlus DB using supplied input dir: {params.existing_db}' >> {log};
+          amrfinder_update --force_update --database {params.existing_db}/amrfinderplus-db &>> {log}
         fi
         """
 

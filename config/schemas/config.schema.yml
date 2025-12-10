@@ -80,6 +80,18 @@ properties:
       extra:
         type: string
         description: Extra command-line arguments for QUAST
+  panaroo:
+    type: object
+    properties:
+      remove_source:
+        type: string
+        description: Source types to remove in Panaroo (regex supported)
+      remove_feature:
+        type: string
+        description: Feature types to remove in Panaroo (regex supported)
+      extra:
+        type: string
+        description: Extra command-line arguments for Panaroo
 
 required:
   - samplesheet

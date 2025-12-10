@@ -23,7 +23,6 @@ def get_fasta(wildcards):
     sample = wildcards.sample
     if sample not in samples.index:
         raise ValueError(f"Sample {sample} not found in samplesheet.")
-    # return the fasta file path
     return samples.loc[sample, "file"]
 
 
@@ -35,9 +34,31 @@ def get_quast_fasta(wildcards):
     )
 
 
-def get_quast_gff(wildcards):
+def get_panaroo_gff(wildcards):
     return expand(
-        "results/annotation/{tool}/{sample}/{sample}.gff",
+        "results/qc/panaroo/{tool}/prepare/{sample}.gff",
         tool=wildcards.tool,
         sample=samples.index,
     )
+
+
+def get_panaroo_fasta(wildcards):
+    return expand(
+        "results/qc/panaroo/{tool}/prepare/{sample}.fna",
+        tool=wildcards.tool,
+        sample=samples.index,
+    )
+
+
+def get_final_input(wildcards):
+    inputs = []
+    inputs += expand(
+        "results/qc/quast/{tool}/report.txt",
+        tool=config["tool"],
+    )
+    if len(samples.index) > 1:
+        inputs += expand(
+            "results/qc/panaroo/{tool}/summary_statistics.txt",
+            tool=config["tool"],
+        )
+    return inputs
