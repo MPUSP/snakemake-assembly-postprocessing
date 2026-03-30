@@ -4,7 +4,6 @@ import re
 from snakemake import logging
 from snakemake.utils import validate
 
-
 # read sample sheet
 samples = (
     pd.read_csv(config["samplesheet"], sep=",", dtype={"sample": str})

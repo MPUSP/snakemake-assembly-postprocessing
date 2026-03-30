@@ -3,10 +3,11 @@ rule quast:
         fasta=get_quast_fasta,
     output:
         report="results/qc/quast/{tool}/report.txt",
+    log:
+        "results/qc/quast/{tool}/quast.log",
     conda:
         "../envs/quast.yml"
-    message:
-        """--- Running QUAST quality check for all assemblies ---"""
+    threads: 4
     params:
         outdir=lambda wc, output: os.path.dirname(output.report),
         ref_fasta=(
@@ -20,9 +21,8 @@ rule quast:
             else []
         ),
         extra=config["quast"]["extra"],
-    threads: 4
-    log:
-        "results/qc/quast/{tool}/quast.log",
+    message:
+        """--- Running QUAST quality check for all assemblies ---"""
     shell:
         """
         quast \
@@ -43,15 +43,15 @@ rule prepare_panaroo:
     output:
         fasta="results/qc/panaroo/{tool}/prepare/{sample}.fna",
         gff="results/qc/panaroo/{tool}/prepare/{sample}.gff",
+    log:
+        "results/qc/panaroo/{tool}/prepare/{sample}.log",
     conda:
         "../envs/panaroo.yml"
-    message:
-        """--- Prepare input files for pan-genome alignment ---"""
     params:
         remove_source=config["panaroo"]["remove_source"],
         remove_feature=config["panaroo"]["remove_feature"],
-    log:
-        "results/qc/panaroo/{tool}/prepare/{sample}.log",
+    message:
+        """--- Prepare input files for pan-genome alignment ---"""
     shell:
         """
         echo 'Preparing annotation for Panaroo:' > {log};
@@ -70,16 +70,16 @@ rule panaroo:
         fasta=get_panaroo_fasta,
     output:
         stats="results/qc/panaroo/{tool}/summary_statistics.txt",
+    log:
+        "results/qc/panaroo/{tool}/panaroo.log",
     conda:
         "../envs/panaroo.yml"
-    message:
-        """--- Running PANAROO to create pangenome from all annotations ---"""
+    threads: 4
     params:
         outdir=lambda wc, output: os.path.dirname(output.stats),
         extra=config["panaroo"]["extra"],
-    threads: 4
-    log:
-        "results/qc/panaroo/{tool}/panaroo.log",
+    message:
+        """--- Running PANAROO to create pangenome from all annotations ---"""
     shell:
         """
         printf '%s\n' {input.gff} | \
