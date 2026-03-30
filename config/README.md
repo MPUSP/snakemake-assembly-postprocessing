@@ -23,33 +23,3 @@ The samplesheet table has the following layout:
 | ...    | ...                      | ...    | ...       | ...            |
 
 **Note:** Pangenome analysis with `Panaroo` requires at least two samples.
-
-### Parameters
-
-This table lists all parameters that can be used to run the workflow.
-
-| Parameter | Type | Details | Default |
-|:---|:---|:---|:---|
-| **samplesheet** | string | Path to the sample sheet file in csv format | |
-| **tool** | array[string] | Annotation tool to use (one of `prokka`, `pgap`, `bakta`) | |
-| **pgap** | | PGAP configuration object |  |
-| bin | string | Path to the PGAP script | |
-| use_yaml_config | boolean | Whether to use YAML configuration for PGAP | `False` |
-| _prepare_yaml_files_ | | Paths to YAML templates for PGAP | |
-| generic | string | Path to the generic YAML configuration file | |
-| submol | string | Path to the submol YAML configuration file | |
-| **prokka** | | Prokka configuration object | |
-| center | string | Center name for Prokka annotation (used in sequence IDs) | |
-| extra | string | Extra command-line arguments for Prokka | `--addgenes` |
-| **bakta** | | Bakta configuration object | |
-| download_db | string | Bakta database type (`full`, `light`, or `none`) | `light` |
-| existing_db | string | Path to an existing Bakta database (optional). Needs to be combined with `download_db='none'` | `--keep-contig-headers --compliant` |
-| extra | string | Extra command-line arguments for Bakta | |
-| **quast** | | QUAST configuration object | |
-| reference_fasta | string | Path to the reference genome for QUAST | |
-| reference_gff | string | Path to the reference annotation for QUAST |
-| extra | string | Extra command-line arguments for QUAST | |
-| **panaroo** | | Panaroo configuration object | |
-| remove_source | string | Source types to remove in Panaroo (regex supported) | `cmsearch` |
-| remove_feature | string | Feature types to remove in Panaroo (regex supported) | `tRNA\|rRNA\|ncRNA\|exon\|sequence_feature` |
-| extra | string | Extra command-line arguments for Panaroo | `--clean-mode strict --remove-invalid-genes` |
