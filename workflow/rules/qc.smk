@@ -49,7 +49,7 @@ rule fastani:
     params:
         outdir=lambda wc, output: os.path.dirname(output.txt),
         ref_fasta=(
-            " ".join(["-r", config["quast"]["reference_fasta"]])
+            [config["quast"]["reference_fasta"]]
             if config["quast"]["reference_fasta"]
             else []
         ),
@@ -59,7 +59,7 @@ rule fastani:
     shell:
         """
         printf '%s\n' {input.fasta} > {params.outdir}/input_files.txt;
-        {params.ref_fasta} >> {params.outdir}/input_files.txt;
+        printf '%s\n' {params.ref_fasta} >> {params.outdir}/input_files.txt;
         fastANI \
           --ql {params.outdir}/input_files.txt \
           --rl {params.outdir}/input_files.txt \
