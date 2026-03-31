@@ -4,7 +4,4 @@ channels:
   - bioconda
   - nodefaults
 dependencies:
-  - numpy=1.26.4
-  - scipy=1.11.4
-  - biopython=1.84
-  - panaroo=1.6.0
+  - fastani=1.34

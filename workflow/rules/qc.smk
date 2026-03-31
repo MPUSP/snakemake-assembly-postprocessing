@@ -7,7 +7,7 @@ rule quast:
         "results/qc/quast/{tool}/quast.log",
     conda:
         "../envs/quast.yml"
-    threads: 4
+    threads: max(workflow.cores * 0.5, 1)
     params:
         outdir=lambda wc, output: os.path.dirname(output.report),
         ref_fasta=(
@@ -33,6 +33,40 @@ rule quast:
         {params.extra} \
         {input.fasta} \
         > {log} 2>&1
+        """
+
+
+rule fastani:
+    input:
+        fasta=get_quast_fasta,
+    output:
+        txt="results/qc/fastani/{tool}/summary.txt",
+    log:
+        "results/qc/fastani/{tool}/fastani.log",
+    conda:
+        "../envs/fastani.yml"
+    threads: max(workflow.cores * 0.5, 1)
+    params:
+        outdir=lambda wc, output: os.path.dirname(output.txt),
+        ref_fasta=(
+            " ".join(["-r", config["quast"]["reference_fasta"]])
+            if config["quast"]["reference_fasta"]
+            else []
+        ),
+        extra=config["fastani"]["extra"],
+    message:
+        """--- Running FastANI to compare genome similarity (all vs all) ---"""
+    shell:
+        """
+        printf '%s\n' {input.fasta} > {params.outdir}/input_files.txt;
+        {params.ref_fasta} >> {params.outdir}/input_files.txt;
+        fastANI \
+          --ql {params.outdir}/input_files.txt \
+          --rl {params.outdir}/input_files.txt \
+          --output {output.txt} \
+          --threads {threads} \
+          {params.extra} \
+          > {log} 2>&1
         """
 
 
@@ -74,7 +108,7 @@ rule panaroo:
         "results/qc/panaroo/{tool}/panaroo.log",
     conda:
         "../envs/panaroo.yml"
-    threads: 4
+    threads: max(workflow.cores * 0.5, 1)
     params:
         outdir=lambda wc, output: os.path.dirname(output.stats),
         extra=config["panaroo"]["extra"],

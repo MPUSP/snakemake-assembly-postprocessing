@@ -48,7 +48,6 @@ rule annotate_pgap:
         "results/annotation/pgap/logs/{sample}_pgap.log",
     conda:
         "../envs/base.yml"
-    threads: 1
     params:
         pgap=config["pgap"]["bin"],
         use_yaml_config=config["pgap"]["use_yaml_config"],
@@ -87,7 +86,7 @@ rule annotate_prokka:
         "results/annotation/prokka/logs/{sample}_prokka.log",
     conda:
         "../envs/prokka.yml"
-    threads: workflow.cores * 0.25
+    threads: max(workflow.cores * 0.5, 1)
     params:
         prefix=lambda wc: wc.sample,
         locustag=lambda wc: samples.loc[wc.sample]["id_prefix"],
@@ -127,7 +126,7 @@ rule get_bakta_db:
         "results/annotation/bakta/database/db.log",
     conda:
         "../envs/bakta.yml"
-    threads: workflow.cores * 0.25
+    threads: max(workflow.cores * 0.25, 1)
     params:
         download_db=config["bakta"]["download_db"],
         existing_db=config["bakta"]["existing_db"],
@@ -160,7 +159,7 @@ rule annotate_bakta:
         "results/annotation/bakta/logs/{sample}_bakta.log",
     conda:
         "../envs/bakta.yml"
-    threads: workflow.cores * 0.25
+    threads: max(workflow.cores * 0.25, 1)
     params:
         prefix=lambda wc: wc.sample,
         locustag=lambda wc: format_bakta_locustag(samples.loc[wc.sample]["id_prefix"]),

@@ -62,6 +62,11 @@ def get_final_input(wildcards):
             "results/qc/panaroo/{tool}/summary_statistics.txt",
             tool=config["tool"],
         )
+    if len(samples.index) > 1 and not config["fastani"]["skip"]:
+        inputs += expand(
+            "results/qc/fastani/{tool}/summary.txt",
+            tool=config["tool"],
+        )
     return inputs
 
 
