@@ -86,7 +86,7 @@ rule annotate_prokka:
         "results/annotation/prokka/logs/{sample}_prokka.log",
     conda:
         "../envs/prokka.yml"
-    threads: max(workflow.cores * 0.5, 1)
+    threads: max(workflow.cores * 0.25, 1)
     params:
         prefix=lambda wc: wc.sample,
         locustag=lambda wc: samples.loc[wc.sample]["id_prefix"],
