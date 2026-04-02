@@ -19,6 +19,19 @@ properties:
         - prokka
         - pgap
         - bakta
+  reference:
+    type: object
+    properties:
+      fasta:
+        type: string
+        description: Path to the reference genome in FASTA format
+        default: ""
+      gff:
+        type: string
+        description: Path to the reference annotation in GFF format (optional)
+        default: ""
+    required:
+      - fasta
   pgap:
     type: object
     properties:
@@ -84,21 +97,11 @@ properties:
   quast:
     type: object
     properties:
-      reference_fasta:
-        type: string
-        description: Path to the reference genome for QUAST
-        default: ""
-      reference_gff:
-        type: string
-        description: Path to the reference annotation for QUAST
-        default: ""
       extra:
         type: string
         description: Extra command-line arguments for QUAST
         default: ""
     required:
-      - reference_fasta
-      - reference_gff
       - extra
   panaroo:
     type: object
@@ -133,6 +136,7 @@ properties:
 required:
   - samplesheet
   - tool
+  - reference
   - pgap
   - prokka
   - bakta

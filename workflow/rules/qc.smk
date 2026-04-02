@@ -1,23 +1,23 @@
 rule quast:
     input:
-        fasta=get_quast_fasta,
+        fasta=get_all_fasta,
     output:
-        report="results/qc/quast/{tool}/report.txt",
+        report="results/qc/quast/report.txt",
     log:
-        "results/qc/quast/{tool}/quast.log",
+        "results/qc/quast/quast.log",
     conda:
         "../envs/quast.yml"
     threads: max(workflow.cores * 0.5, 1)
     params:
         outdir=lambda wc, output: os.path.dirname(output.report),
         ref_fasta=(
-            " ".join(["-r", config["quast"]["reference_fasta"]])
-            if config["quast"]["reference_fasta"]
+            " ".join(["-r", config["reference"]["fasta"]])
+            if config["reference"]["fasta"]
             else []
         ),
         ref_gff=(
-            " ".join(["-g", config["quast"]["reference_gff"]])
-            if config["quast"]["reference_gff"]
+            " ".join(["-g", config["reference"]["gff"]])
+            if config["reference"]["gff"]
             else []
         ),
         extra=config["quast"]["extra"],
@@ -38,20 +38,18 @@ rule quast:
 
 rule fastani:
     input:
-        fasta=get_quast_fasta,
+        fasta=get_all_fasta,
     output:
-        txt="results/qc/fastani/{tool}/summary.txt",
+        txt="results/qc/fastani/summary.txt",
     log:
-        "results/qc/fastani/{tool}/fastani.log",
+        "results/qc/fastani/fastani.log",
     conda:
         "../envs/fastani.yml"
     threads: max(workflow.cores * 0.5, 1)
     params:
         outdir=lambda wc, output: os.path.dirname(output.txt),
         ref_fasta=(
-            [config["quast"]["reference_fasta"]]
-            if config["quast"]["reference_fasta"]
-            else []
+            [config["reference"]["fasta"]] if config["reference"]["fasta"] else []
         ),
         extra=config["fastani"]["extra"],
     message:

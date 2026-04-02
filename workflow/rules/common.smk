@@ -27,12 +27,9 @@ def get_fasta(wildcards):
     return samples.loc[sample, "file"]
 
 
-def get_quast_fasta(wildcards):
-    return expand(
-        "results/annotation/{tool}/{sample}/{sample}.fna",
-        tool=wildcards.tool,
-        sample=samples.index,
-    )
+def get_all_fasta(wildcards):
+    """Get all input fasta files for all samples."""
+    return [samples.loc[s, "file"] for s in samples.index]
 
 
 def get_panaroo_gff(wildcards):
@@ -54,8 +51,7 @@ def get_panaroo_fasta(wildcards):
 def get_final_input(wildcards):
     inputs = []
     inputs += expand(
-        "results/qc/quast/{tool}/report.txt",
-        tool=config["tool"],
+        "results/qc/quast/report.txt",
     )
     if len(samples.index) > 1 and not config["panaroo"]["skip"]:
         inputs += expand(
@@ -64,8 +60,7 @@ def get_final_input(wildcards):
         )
     if len(samples.index) > 1 and not config["fastani"]["skip"]:
         inputs += expand(
-            "results/qc/fastani/{tool}/summary.txt",
-            tool=config["tool"],
+            "results/qc/fastani/summary.txt",
         )
     return inputs
 
