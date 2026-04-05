@@ -3,10 +3,10 @@ rule get_fasta:
         get_fasta,
     output:
         fasta="results/annotation/pgap/prepare_files/{sample}/genome.fasta",
-    conda:
-        "../envs/base.yml"
     log:
         "results/annotation/pgap/prepare_files/logs/{sample}_get_fasta.log",
+    conda:
+        "../envs/base.yml"
     shell:
         "INPUT=$(realpath {input}); "
         "ln -s ${{INPUT}} {output}; "
@@ -19,6 +19,8 @@ rule prepare_yaml_files:
     output:
         input_yaml="results/annotation/pgap/prepare_files/{sample}/input.yaml",
         submol_yaml="results/annotation/pgap/prepare_files/{sample}/submol.yaml",
+    log:
+        "results/annotation/pgap/prepare_files/logs/{sample}_prepare_yaml_files.log",
     conda:
         "../envs/base.yml"
     params:
@@ -28,8 +30,6 @@ rule prepare_yaml_files:
         submol=config["pgap"]["prepare_yaml_files"]["submol"],
         sample="{sample}",
         pd_samples=samples,
-    log:
-        "results/annotation/pgap/prepare_files/logs/{sample}_prepare_yaml_files.log",
     script:
         "../scripts/prepare_yaml_files.py"
 
@@ -44,18 +44,17 @@ rule annotate_pgap:
     output:
         gff="results/annotation/pgap/{sample}/{sample}.gff",
         fasta="results/annotation/pgap/{sample}/{sample}.fna",
+    log:
+        "results/annotation/pgap/logs/{sample}_pgap.log",
     conda:
         "../envs/base.yml"
-    message:
-        """--- Running PGAP annotation for sample {wildcards.sample} ---"""
     params:
         pgap=config["pgap"]["bin"],
         use_yaml_config=config["pgap"]["use_yaml_config"],
         species=lambda wc: samples.loc[wc.sample]["species"],
         outdir=lambda wc, output: os.path.dirname(output[0]),
-    threads: 1
-    log:
-        "results/annotation/pgap/logs/{sample}_pgap.log",
+    message:
+        """--- Running PGAP annotation for sample {wildcards.sample} ---"""
     shell:
         "rm -rf {params.outdir}; "
         "if [ {params.use_yaml_config} == 'True' ]; then "
@@ -83,10 +82,11 @@ rule annotate_prokka:
     output:
         gff="results/annotation/prokka/{sample}/{sample}.gff",
         fasta="results/annotation/prokka/{sample}/{sample}.fna",
+    log:
+        "results/annotation/prokka/logs/{sample}_prokka.log",
     conda:
         "../envs/prokka.yml"
-    message:
-        """--- Running PROKKA annotation for sample {wildcards.sample} ---"""
+    threads: max(workflow.cores * 0.25, 1)
     params:
         prefix=lambda wc: wc.sample,
         locustag=lambda wc: samples.loc[wc.sample]["id_prefix"],
@@ -95,9 +95,8 @@ rule annotate_prokka:
         strain=lambda wc: samples.loc[wc.sample]["strain"],
         outdir=lambda wc, output: os.path.dirname(output[0]),
         extra=config["prokka"]["extra"],
-    threads: workflow.cores * 0.25
-    log:
-        "results/annotation/prokka/logs/{sample}_prokka.log",
+    message:
+        """--- Running PROKKA annotation for sample {wildcards.sample} ---"""
     shell:
         """
         prokka \
@@ -123,17 +122,17 @@ rule get_bakta_db:
                 "none": directory("results/annotation/bakta/database/custom"),
             },
         ),
+    log:
+        "results/annotation/bakta/database/db.log",
     conda:
         "../envs/bakta.yml"
-    message:
-        """--- Getting BAKTA database for annotation ---"""
+    threads: max(workflow.cores * 0.25, 1)
     params:
         download_db=config["bakta"]["download_db"],
         existing_db=config["bakta"]["existing_db"],
         outdir=lambda wc, output: os.path.dirname(output[0]),
-    threads: workflow.cores * 0.25
-    log:
-        "results/annotation/bakta/database/db.log",
+    message:
+        """--- Getting BAKTA database for annotation ---"""
     shell:
         """
         if [ {params.download_db} != 'none' ]; then
@@ -156,10 +155,11 @@ rule annotate_bakta:
     output:
         gff="results/annotation/bakta/{sample}/{sample}.gff",
         fasta="results/annotation/bakta/{sample}/{sample}.fna",
+    log:
+        "results/annotation/bakta/logs/{sample}_bakta.log",
     conda:
         "../envs/bakta.yml"
-    message:
-        """--- Running BAKTA annotation for sample {wildcards.sample} ---"""
+    threads: max(workflow.cores * 0.25, 1)
     params:
         prefix=lambda wc: wc.sample,
         locustag=lambda wc: format_bakta_locustag(samples.loc[wc.sample]["id_prefix"]),
@@ -167,9 +167,8 @@ rule annotate_bakta:
         strain=lambda wc: samples.loc[wc.sample]["strain"],
         outdir=lambda wc, output: os.path.dirname(output[0]),
         extra=config["bakta"]["extra"],
-    threads: workflow.cores * 0.25
-    log:
-        "results/annotation/bakta/logs/{sample}_bakta.log",
+    message:
+        """--- Running BAKTA annotation for sample {wildcards.sample} ---"""
     shell:
         """
         bakta \

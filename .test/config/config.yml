@@ -1,6 +1,10 @@
 samplesheet: "config/samples.csv"
 tool: ["prokka"]
 
+reference:
+  fasta: ""
+  gff: ""
+
 pgap:
   bin: "path/to/pgap.py"
   use_yaml_config: True
@@ -18,8 +22,6 @@ bakta:
   extra: "--keep-contig-headers --compliant"
 
 quast:
-  reference_fasta: ""
-  reference_gff: ""
   extra: ""
 
 panaroo:
@@ -27,3 +29,7 @@ panaroo:
   remove_source: "cmsearch"
   remove_feature: "tRNA|rRNA|ncRNA|exon|sequence_feature"
   extra: "--clean-mode strict --remove-invalid-genes"
+
+fastani:
+  skip: False
+  extra: ""

@@ -4,7 +4,6 @@ import re
 from snakemake import logging
 from snakemake.utils import validate
 
-
 # read sample sheet
 samples = (
     pd.read_csv(config["samplesheet"], sep=",", dtype={"sample": str})
@@ -28,12 +27,9 @@ def get_fasta(wildcards):
     return samples.loc[sample, "file"]
 
 
-def get_quast_fasta(wildcards):
-    return expand(
-        "results/annotation/{tool}/{sample}/{sample}.fna",
-        tool=wildcards.tool,
-        sample=samples.index,
-    )
+def get_all_fasta(wildcards):
+    """Get all input fasta files for all samples."""
+    return [samples.loc[s, "file"] for s in samples.index]
 
 
 def get_panaroo_gff(wildcards):
@@ -55,13 +51,16 @@ def get_panaroo_fasta(wildcards):
 def get_final_input(wildcards):
     inputs = []
     inputs += expand(
-        "results/qc/quast/{tool}/report.txt",
-        tool=config["tool"],
+        "results/qc/quast/report.txt",
     )
     if len(samples.index) > 1 and not config["panaroo"]["skip"]:
         inputs += expand(
             "results/qc/panaroo/{tool}/summary_statistics.txt",
             tool=config["tool"],
+        )
+    if len(samples.index) > 1 and not config["fastani"]["skip"]:
+        inputs += expand(
+            "results/qc/fastani/summary.txt",
         )
     return inputs
 
