@@ -50,6 +50,13 @@ def get_panaroo_fasta(wildcards):
 
 def get_final_input(wildcards):
     inputs = []
+    for tool in config["tool"]:
+        inputs += expand(
+            "results/annotation/{tool}/{sample}/{sample}.{ext}",
+            tool=tool,
+            sample=samples.index,
+            ext=["gff", "fna"]
+        )
     inputs += expand(
         "results/qc/quast/report.txt",
     )
