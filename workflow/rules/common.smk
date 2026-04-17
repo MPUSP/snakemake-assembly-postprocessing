@@ -55,7 +55,7 @@ def get_final_input(wildcards):
             "results/annotation/{tool}/{sample}/{sample}.{ext}",
             tool=tool,
             sample=samples.index,
-            ext=["gff", "fna"]
+            ext=["gff", "fna"],
         )
     inputs += expand(
         "results/qc/quast/report.txt",
@@ -71,9 +71,7 @@ def get_final_input(wildcards):
         )
     if not config["rgi"]["skip"]:
         inputs += expand(
-            "results/qc/rgi/{sample}.{ext}",
-            sample=samples.index,
-            ext=["txt", "json"]
+            "results/qc/rgi/{sample}.{ext}", sample=samples.index, ext=["txt", "json"]
         )
     return inputs
 
