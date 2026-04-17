@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.2.0](https://github.com/MPUSP/snakemake-assembly-postprocessing/compare/v1.1.0...v1.2.0) (2026-04-05)
+
+
+### Features
+
+* fix panaroo bug, added fastANI rule, harmonized multi-threading ([5d6c810](https://github.com/MPUSP/snakemake-assembly-postprocessing/commit/5d6c8100bfdf335047c37a98cd60d8cd9eec94bf))
+* update github CI workflows and config options ([df6d610](https://github.com/MPUSP/snakemake-assembly-postprocessing/commit/df6d6105de6dd38979ec668235d8d961aa9ad3ab))
+
+
+### Bug Fixes
+
+* adjust threads of prokka run ([6f3e4c2](https://github.com/MPUSP/snakemake-assembly-postprocessing/commit/6f3e4c24b138eadb882629c62386237b986af0af))
+* introduced general reference parameter in config file. refactored some qc rules. ([328c40a](https://github.com/MPUSP/snakemake-assembly-postprocessing/commit/328c40a50be8e475a28bc3349b1311750ce84932))
+* new snakefmt directive order ([50f20da](https://github.com/MPUSP/snakemake-assembly-postprocessing/commit/50f20dae6e9187f5c46b22f749ced971deac4e69))
+* reference input ([7778d93](https://github.com/MPUSP/snakemake-assembly-postprocessing/commit/7778d93faa157eb56eb8f2aea8e0f8d5dcc8f265))
+* schema and README update ([20a6fc9](https://github.com/MPUSP/snakemake-assembly-postprocessing/commit/20a6fc9fb3f75a3ba54b8ef719b311ab2412a871))
+* typos ([e72502d](https://github.com/MPUSP/snakemake-assembly-postprocessing/commit/e72502dd8db409fe0cc9b96b8d78a7f18b2f260c))
+* update CI workflows ([fdf4adc](https://github.com/MPUSP/snakemake-assembly-postprocessing/commit/fdf4adcc263cc80606442cad44d2963ea6bf050e))
+
 ## [1.1.0](https://github.com/MPUSP/snakemake-assembly-postprocessing/compare/v1.0.0...v1.1.0) (2025-12-10)
 
 
