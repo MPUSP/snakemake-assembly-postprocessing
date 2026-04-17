@@ -69,6 +69,12 @@ def get_final_input(wildcards):
         inputs += expand(
             "results/qc/fastani/summary.txt",
         )
+    if not config["rgi"]["skip"]:
+        inputs += expand(
+            "results/qc/rgi/{sample}.{ext}",
+            sample=samples.index,
+            ext=["txt", "json"]
+        )
     return inputs
 
 
