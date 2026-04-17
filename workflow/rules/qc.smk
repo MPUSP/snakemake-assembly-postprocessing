@@ -130,9 +130,9 @@ rule rgi_detection:
     input:
         fasta=rules.get_fasta.output.fasta,
     output:
-        multiext("results/qc/rgi/{sample}", ".txt", ".json"),
+        multiext("results/qc/rgi/{sample}/result", ".txt", ".json"),
     log:
-        "results/qc/rgi/{sample}.log",
+        "results/qc/rgi/{sample}/result.log",
     threads: max(workflow.cores * 0.25, 1)
     params:
         input_type="contig",
