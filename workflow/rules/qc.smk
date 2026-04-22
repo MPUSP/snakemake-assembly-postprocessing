@@ -141,3 +141,98 @@ rule rgi_detection:
         """--- Running RGI to detect antibiotic resistance genes ---"""
     wrapper:
         "https://raw.githubusercontent.com/MPUSP/mpusp-snakemake-wrappers/refs/heads/main/rgi"
+
+
+rule synteny_detection:
+    input:
+        fastas=get_all_fasta,
+    output:
+        tsv=f"results/qc/genome_synteny/{config["synteny"].get("prefix", "ntSynt")}.synteny_blocks.tsv",
+        fai=directory("results/qc/genome_synteny/fai"),
+    log:
+        "results/qc/genome_synteny/logs/ntSynt.log",
+    conda:
+        "../envs/ntsynt.yml"
+    threads: workflow.cores
+    params:
+        outdir=lambda wc, output: os.path.dirname(output.tsv),
+        divergence=config["synteny"]["divergence"],
+        prefix=config["synteny"].get("prefix", "ntSynt"),
+    message:
+        """--- Running ntSynt for multi-genome macrosynteny synteny detection ---"""
+    shell:
+        """
+        ntSynt {input.fastas} \
+          -d {params.divergence} \
+          -t {threads} \
+          --force \
+          -p {params.prefix} \
+          > {log} 2>&1;
+        echo "Synteny detection completed. Moving results to output directory." >> {log};
+        rsync ./{params.prefix}.* {params.outdir}/;
+        echo "Create fai output directory." >> {log};
+        mkdir -p {output.fai};
+        rsync ./*.fai {output.fai}/;
+        echo "Remove intermediate files." >> {log};
+        rm -f ./*.fai ./*.tsv ./*.bf ./*.dot
+        """
+
+
+rule prepare_ntsynt_names:
+    output:
+        "results/qc/genome_synteny/ntSynt-viz_name_conversion.tsv",
+    log:
+        "results/qc/genome_synteny/logs/prepare_ntSynt-viz_names.log",
+    conda:
+        "../envs/base.yml"
+    threads: 1
+    params:
+        sample_sheet=config["samplesheet"],
+    message:
+        """--- Preparing name mapping file for ntSynt visualization ---"""
+    script:
+        "../scripts/prepare_ntSynt_viz_names.py"
+
+
+rule viz_synteny:
+    input:
+        blocks=rules.synteny_detection.output.tsv,
+        fai=rules.synteny_detection.output.fai,
+        names=rules.prepare_ntsynt_names.output,
+    output:
+        pdf=f"results/qc/genome_synteny/{config["synteny"].get("prefix", "ntSynt")}_ribbon-plot.pdf",
+    log:
+        "results/qc/genome_synteny/logs/ntSynt-viz.log",
+    conda:
+        "../envs/ntsynt.yml"
+    threads: 1
+    params:
+        outdir=lambda wc, output: os.path.dirname(output.pdf),
+        fais=lambda wc, input: " ".join(glob.glob(os.path.join(input.fai, "*.fai"))),
+        scale=config["synteny"]["viz_scale"],
+        ref_fasta=(
+            " ".join(["--target-genome", config["reference"]["fasta"]])
+            if config["reference"]["fasta"]
+            else []
+        ),
+        prefix=config["synteny"].get("prefix", "ntSynt"),
+        extra=config["synteny"]["viz_extra"],
+    message:
+        """--- Running ntSynt-viz to generate multi-genome ribbon plots ---"""
+    shell:
+        """
+        ntsynt_viz.py \
+          --blocks {input.blocks} \
+          --fais {params.fais} \
+          --name_conversion {input.names} \
+          {params.ref_fasta} \
+          --scale {params.scale} \
+          --prefix {params.prefix} \
+          {params.extra} \
+          > {log} 2>&1;
+          echo "Synteny-viz completed. Moving results to output directory." >> {log};
+        rsync ./{params.prefix}.* {params.outdir}/;
+        rsync ./{params.prefix}_* {params.outdir}/;
+        echo "Clean intermediate files." >> {log};
+        rm -f ./{params.prefix}.*.tsv ./{params.prefix}_*;
+        """

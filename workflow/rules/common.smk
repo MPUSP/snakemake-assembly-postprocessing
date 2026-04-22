@@ -1,4 +1,6 @@
 # import basic packages
+import glob
+import os
 import pandas as pd
 import re
 from snakemake import logging
@@ -75,6 +77,13 @@ def get_final_input(wildcards):
             sample=samples.index,
             ext=["txt", "json"],
         )
+    if not config["synteny"]["skip"]:
+        if len(samples.index) > 1 or (
+            len(samples.index) == 1 and config["reference"]["fasta"] != ""
+        ):
+            inputs += expand(
+                f"results/qc/genome_synteny/{config["synteny"].get("prefix", "ntSynt")}_ribbon-plot.pdf",
+            )
     return inputs
 
 

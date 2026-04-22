@@ -1,0 +1,8 @@
+name: bakta
+channels:
+  - conda-forge
+  - bioconda
+  - nodefaults
+dependencies:
+  - ntsynt=1.0.5
+  - ntsynt-viz=1.0.4
