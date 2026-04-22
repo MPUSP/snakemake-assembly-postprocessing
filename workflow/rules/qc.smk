@@ -128,7 +128,7 @@ rule panaroo:
 
 rule rgi_detection:
     input:
-        fasta=rules.get_fasta.output.fasta,
+        fasta=get_fasta,
     output:
         multiext("results/qc/rgi/{sample}/result", ".txt", ".json"),
     log:
