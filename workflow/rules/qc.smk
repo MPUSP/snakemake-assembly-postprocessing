@@ -124,3 +124,20 @@ rule panaroo:
           {params.extra} \
           > {log} 2>&1
         """
+
+
+rule rgi_detection:
+    input:
+        fasta=rules.get_fasta.output.fasta,
+    output:
+        multiext("results/qc/rgi/{sample}/result", ".txt", ".json"),
+    log:
+        "results/qc/rgi/{sample}/result.log",
+    threads: max(workflow.cores * 0.25, 1)
+    params:
+        input_type="contig",
+        extra=config["rgi"]["extra"],
+    message:
+        """--- Running RGI to detect antibiotic resistance genes ---"""
+    wrapper:
+        "https://raw.githubusercontent.com/MPUSP/mpusp-snakemake-wrappers/refs/heads/main/rgi"

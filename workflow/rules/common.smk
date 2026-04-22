@@ -50,6 +50,13 @@ def get_panaroo_fasta(wildcards):
 
 def get_final_input(wildcards):
     inputs = []
+    for tool in config["tool"]:
+        inputs += expand(
+            "results/annotation/{tool}/{sample}/{sample}.{ext}",
+            tool=tool,
+            sample=samples.index,
+            ext=["gff", "fna"],
+        )
     inputs += expand(
         "results/qc/quast/report.txt",
     )
@@ -61,6 +68,12 @@ def get_final_input(wildcards):
     if len(samples.index) > 1 and not config["fastani"]["skip"]:
         inputs += expand(
             "results/qc/fastani/summary.txt",
+        )
+    if not config["rgi"]["skip"]:
+        inputs += expand(
+            "results/qc/rgi/{sample}/result.{ext}",
+            sample=samples.index,
+            ext=["txt", "json"],
         )
     return inputs
 

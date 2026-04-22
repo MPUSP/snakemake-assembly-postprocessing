@@ -7,9 +7,10 @@ A Snakemake workflow for the post-processing of microbial genome assemblies.
    1. NCBI's Prokaryotic Genome Annotation Pipeline ([PGAP](https://github.com/ncbi/pgap)). Note: needs to be installed manually
    2. [prokka](https://github.com/tseemann/prokka), a fast and light-weight prokaryotic annotation tool
    3. [bakta](https://github.com/oschwengers/bakta), a fast, alignment-free annotation tool. Note: Bakta will automatically download its companion database from zenodo (light: 1.5 GB, full: 40 GB)
-3. Create a QC report for the assemblies using [Quast](https://github.com/ablab/quast)
-4. Create a pangenome analysis (orthologs/homologs) using [Panaroo](https://gthlab.au/panaroo/)
-5. Compute pairwise average nucleotide identity (ANI) between the assemblies using [FastANI](https://github.com/ParBLiSS/FastANI) and plot a phylogenetic tree based on the ANI distances.
+3. Predict antimicrobial resistance (AMR) genes using [RGI](https://github.com/arpcard/rgi)
+4. Create a QC report for the assemblies using [Quast](https://github.com/ablab/quast)
+5. Create a pangenome analysis (orthologs/homologs) using [Panaroo](https://gthlab.au/panaroo/)
+6. Compute pairwise average nucleotide identity (ANI) between the assemblies using [FastANI](https://github.com/ParBLiSS/FastANI) and plot a phylogenetic tree based on the ANI distances.
 
 ## Running the workflow
 

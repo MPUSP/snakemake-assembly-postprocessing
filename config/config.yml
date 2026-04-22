@@ -33,3 +33,7 @@ panaroo:
 fastani:
   skip: False
   extra: ""
+
+rgi:
+  skip: False
+  extra: "--clean --alignment_tool DIAMOND"
