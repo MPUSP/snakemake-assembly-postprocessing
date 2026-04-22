@@ -40,7 +40,7 @@ rgi:
 
 synteny:
   skip: False
-  divergence: 1 # maximum divergence range between genome (default: 1)
+  divergence: 1
   prefix: "ntSynt"
   extra: ""
   viz_scale: "1e6"
