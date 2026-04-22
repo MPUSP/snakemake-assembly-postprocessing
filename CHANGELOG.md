@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.3.0](https://github.com/MPUSP/snakemake-assembly-postprocessing/compare/v1.2.0...v1.3.0) (2026-04-22)
+
+
+### Features
+
+* add RGI for AMR detection ([ac2566b](https://github.com/MPUSP/snakemake-assembly-postprocessing/commit/ac2566be1ac258fe4356646b6b803fae43bf47b5))
+* added RGI for AMR detection + bug fix ([daf2195](https://github.com/MPUSP/snakemake-assembly-postprocessing/commit/daf2195f57ba762ea7f24b342992d4a59d3bb47a))
+
+
+### Bug Fixes
+
+* add missing targets to run annotation when tool is specified ([7450cce](https://github.com/MPUSP/snakemake-assembly-postprocessing/commit/7450cce6729792d7f745a36ab19358c2ea92e813))
+* need separate dirs for results because intermediate files do have non-unique names ([e028175](https://github.com/MPUSP/snakemake-assembly-postprocessing/commit/e028175cf93dc0175ad6eee7c57cf21534d48b49))
+* snakefmt error ([45e992c](https://github.com/MPUSP/snakemake-assembly-postprocessing/commit/45e992c9939cd407952843746ab855f209c3653c))
+
 ## [1.2.0](https://github.com/MPUSP/snakemake-assembly-postprocessing/compare/v1.1.0...v1.2.0) (2026-04-05)
 
 
