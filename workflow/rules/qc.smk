@@ -158,6 +158,7 @@ rule synteny_detection:
         outdir=lambda wc, output: os.path.dirname(output.tsv),
         divergence=config["synteny"]["divergence"],
         prefix=config["synteny"].get("prefix", "ntSynt"),
+        extra=config["synteny"]["extra"],
     message:
         """--- Running ntSynt for multi-genome macrosynteny synteny detection ---"""
     shell:
@@ -167,6 +168,7 @@ rule synteny_detection:
           -t {threads} \
           --force \
           -p {params.prefix} \
+          {params.extra} \
           > {log} 2>&1;
         echo "Synteny detection completed. Moving results to output directory." >> {log};
         rsync ./{params.prefix}.* {params.outdir}/;
