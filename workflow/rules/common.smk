@@ -34,6 +34,14 @@ def get_all_fasta(wildcards):
     return [samples.loc[s, "file"] for s in samples.index]
 
 
+def get_fasta_ntsynt(wildcards):
+    """Get the fasta file for ntSynt, including reference if provided."""
+    fastas = get_all_fasta(wildcards)
+    if config["reference"]["fasta"]:
+        fastas.append(config["reference"]["fasta"])
+    return fastas
+
+
 def get_panaroo_gff(wildcards):
     return expand(
         "results/qc/panaroo/{tool}/prepare/{sample}.gff",

@@ -30,6 +30,10 @@ properties:
         type: string
         description: Path to the reference annotation in GFF format (optional)
         default: ""
+      name:
+        type: string
+        description: Name of the reference genome (used in synteny visualization)
+        default: "Ref Genome"
     required:
       - fasta
   pgap:
@@ -170,7 +174,7 @@ properties:
       viz_extra:
         type: string
         description: Extra command-line arguments for synteny visualization
-        default: "--normalize --format pdf"
+        default: "--normalize"
 required:
   - samplesheet
   - tool

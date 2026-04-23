@@ -145,12 +145,12 @@ rule rgi_detection:
 
 rule synteny_detection:
     input:
-        fastas=get_all_fasta,
+        fastas=get_fasta_ntsynt,
     output:
         tsv=f"results/qc/genome_synteny/{config["synteny"].get("prefix", "ntSynt")}.synteny_blocks.tsv",
         fai=directory("results/qc/genome_synteny/fai"),
     log:
-        "results/qc/genome_synteny/logs/ntSynt.log",
+        "results/qc/genome_synteny/logs/ntsynt.log",
     conda:
         "../envs/ntsynt.yml"
     threads: workflow.cores
@@ -180,31 +180,36 @@ rule synteny_detection:
         """
 
 
-rule prepare_ntsynt_names:
+rule prepare_names:
     output:
-        "results/qc/genome_synteny/ntSynt-viz_name_conversion.tsv",
+        "results/qc/genome_synteny/ntsynt-viz_name_conversion.tsv",
     log:
-        "results/qc/genome_synteny/logs/prepare_ntSynt-viz_names.log",
+        "results/qc/genome_synteny/logs/prepare_ntsynt-viz_names.log",
     conda:
         "../envs/base.yml"
     threads: 1
     params:
         sample_sheet=config["samplesheet"],
+        ref=(
+            (config["reference"]["fasta"], config["reference"]["name"])
+            if config["reference"]["fasta"]
+            else []
+        ),
     message:
         """--- Preparing name mapping file for ntSynt visualization ---"""
     script:
-        "../scripts/prepare_ntSynt_viz_names.py"
+        "../scripts/prepare_names.py"
 
 
 rule viz_synteny:
     input:
         blocks=rules.synteny_detection.output.tsv,
         fai=rules.synteny_detection.output.fai,
-        names=rules.prepare_ntsynt_names.output,
+        names=rules.prepare_names.output,
     output:
         pdf=f"results/qc/genome_synteny/{config["synteny"].get("prefix", "ntSynt")}_ribbon-plot.pdf",
     log:
-        "results/qc/genome_synteny/logs/ntSynt-viz.log",
+        "results/qc/genome_synteny/logs/ntsynt-viz.log",
     conda:
         "../envs/ntsynt.yml"
     threads: 1
@@ -213,9 +218,16 @@ rule viz_synteny:
         fais=lambda wc, input: " ".join(glob.glob(os.path.join(input.fai, "*.fai"))),
         scale=config["synteny"]["viz_scale"],
         ref_fasta=(
-            " ".join(["--target-genome", config["reference"]["fasta"]])
-            if config["reference"]["fasta"]
-            else []
+            [
+                "--target-genome",
+                config["reference"]["name"].replace("_", "-").replace(" ", "_"),
+            ]
+            if config["reference"]["fasta"] and config["reference"]["name"]
+            else (
+                ["--target-genome", config["reference"]["fasta"]]
+                if config["reference"]["fasta"]
+                else []
+            )
         ),
         prefix=config["synteny"].get("prefix", "ntSynt"),
         extra=config["synteny"]["viz_extra"],
@@ -229,6 +241,7 @@ rule viz_synteny:
           --name_conversion {input.names} \
           {params.ref_fasta} \
           --scale {params.scale} \
+          --format pdf \
           --prefix {params.prefix} \
           {params.extra} \
           > {log} 2>&1;

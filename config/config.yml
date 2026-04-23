@@ -4,6 +4,7 @@ tool: ["prokka"]
 reference:
   fasta: ""
   gff: ""
+  name: ""
 
 pgap:
   bin: "path/to/pgap.py"
@@ -44,4 +45,4 @@ synteny:
   prefix: "ntSynt"
   extra: ""
   viz_scale: "1e6"
-  viz_extra: "--normalize --format pdf"
+  viz_extra: "--normalize"

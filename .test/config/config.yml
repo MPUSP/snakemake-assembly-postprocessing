@@ -2,8 +2,9 @@ samplesheet: "config/samples.csv"
 tool: ["prokka"]
 
 reference:
-  fasta: ""
-  gff: ""
+  fasta: "data/ref_genome.fasta"
+  gff: "data/ref_genome.gff"
+  name: "Ref Genome"
 
 pgap:
   bin: "path/to/pgap.py"
@@ -44,4 +45,4 @@ synteny:
   prefix: "ntSynt"
   extra: ""
   viz_scale: "1e6"
-  viz_extra: "--normalize --format pdf"
+  viz_extra: "--normalize"
