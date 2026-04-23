@@ -1,4 +1,4 @@
-name: bakta
+name: ntsynt
 channels:
   - conda-forge
   - bioconda

@@ -90,7 +90,7 @@ def get_final_input(wildcards):
             len(samples.index) == 1 and config["reference"]["fasta"] != ""
         ):
             inputs += expand(
-                f"results/qc/genome_synteny/{config["synteny"].get("prefix", "ntSynt")}_ribbon-plot.pdf",
+                "results/qc/genome_synteny/ntSynt-viz_ribbon-plot.pdf",
             )
     return inputs
 

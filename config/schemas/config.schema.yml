@@ -126,6 +126,8 @@ properties:
         type: string
         description: Extra command-line arguments for Panaroo
         default: "--clean-mode strict --remove-invalid-genes"
+    required:
+      - extra
   fastani:
     type: object
     properties:
@@ -137,6 +139,8 @@ properties:
         type: string
         description: Extra command-line arguments for FastANI
         default: ""
+    required:
+      - extra
   rgi:
     type: object
     properties:
@@ -148,6 +152,8 @@ properties:
         type: string
         description: Extra command-line arguments for RGI
         default: "--clean --alignment_tool DIAMOND"
+    required:
+      - extra
   synteny:
     type: object
     properties:
@@ -159,10 +165,6 @@ properties:
         type: number
         description: Maximum divergence range between genomes for synteny analysis
         default: 1
-      prefix:
-        type: string
-        description: Prefix for synteny output files
-        default: "ntSynt"
       extra:
         type: string
         description: Extra command-line arguments for synteny analysis
@@ -175,6 +177,11 @@ properties:
         type: string
         description: Extra command-line arguments for synteny visualization
         default: "--normalize"
+    required:
+      - divergence
+      - extra
+      - viz_extra
+      - viz_scale
 required:
   - samplesheet
   - tool

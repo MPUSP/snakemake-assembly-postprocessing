@@ -42,7 +42,6 @@ rgi:
 synteny:
   skip: False
   divergence: 1
-  prefix: "ntSynt"
   extra: ""
   viz_scale: "1e6"
   viz_extra: "--normalize"

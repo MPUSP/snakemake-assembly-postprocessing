@@ -147,7 +147,7 @@ rule synteny_detection:
     input:
         fastas=get_fasta_ntsynt,
     output:
-        tsv=f"results/qc/genome_synteny/{config["synteny"].get("prefix", "ntSynt")}.synteny_blocks.tsv",
+        tsv="results/qc/genome_synteny/ntSynt.synteny_blocks.tsv",
         fai=directory("results/qc/genome_synteny/fai"),
     log:
         "results/qc/genome_synteny/logs/ntsynt.log",
@@ -157,7 +157,6 @@ rule synteny_detection:
     params:
         outdir=lambda wc, output: os.path.dirname(output.tsv),
         divergence=config["synteny"]["divergence"],
-        prefix=config["synteny"].get("prefix", "ntSynt"),
         extra=config["synteny"]["extra"],
     message:
         """--- Running ntSynt for multi-genome macrosynteny synteny detection ---"""
@@ -167,11 +166,11 @@ rule synteny_detection:
           -d {params.divergence} \
           -t {threads} \
           --force \
-          -p {params.prefix} \
+          --prefix ntSynt \
           {params.extra} \
           > {log} 2>&1;
         echo "Synteny detection completed. Moving results to output directory." >> {log};
-        rsync ./{params.prefix}.* {params.outdir}/;
+        rsync ./ntSynt.* {params.outdir}/;
         echo "Create fai output directory." >> {log};
         mkdir -p {output.fai};
         rsync ./*.fai {output.fai}/;
@@ -207,7 +206,7 @@ rule viz_synteny:
         fai=rules.synteny_detection.output.fai,
         names=rules.prepare_names.output,
     output:
-        pdf=f"results/qc/genome_synteny/{config["synteny"].get("prefix", "ntSynt")}_ribbon-plot.pdf",
+        pdf="results/qc/genome_synteny/ntSynt-viz_ribbon-plot.pdf",
     log:
         "results/qc/genome_synteny/logs/ntsynt-viz.log",
     conda:
@@ -229,7 +228,6 @@ rule viz_synteny:
                 else []
             )
         ),
-        prefix=config["synteny"].get("prefix", "ntSynt"),
         extra=config["synteny"]["viz_extra"],
     message:
         """--- Running ntSynt-viz to generate multi-genome ribbon plots ---"""
@@ -242,12 +240,13 @@ rule viz_synteny:
           {params.ref_fasta} \
           --scale {params.scale} \
           --format pdf \
-          --prefix {params.prefix} \
+          --prefix ntSynt-viz \
           {params.extra} \
           > {log} 2>&1;
           echo "Synteny-viz completed. Moving results to output directory." >> {log};
-        rsync ./{params.prefix}.* {params.outdir}/;
-        rsync ./{params.prefix}_* {params.outdir}/;
+        rsync ./ntSynt.* {params.outdir}/;
+        rsync ./ntSynt-viz.* {params.outdir}/;
+        rsync ./ntSynt-viz_* {params.outdir}/;
         echo "Clean intermediate files." >> {log};
-        rm -f ./{params.prefix}.*.tsv ./{params.prefix}_*;
+        rm -f ./ntSynt-viz.*.tsv ./ntSynt-viz_* ./ntSynt.*.tsv;
         """
