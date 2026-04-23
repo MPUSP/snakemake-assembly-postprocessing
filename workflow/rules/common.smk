@@ -79,6 +79,10 @@ def get_final_input(wildcards):
         inputs += expand(
             "results/qc/fastani/summary.txt",
         )
+    if not config["checkm"]["skip"]:
+        inputs += expand(
+            "results/qc/checkm/predicted/quality_report.tsv",
+        )
     if not config["rgi"]["skip"]:
         inputs += expand(
             "results/qc/rgi/{sample}/result.{ext}",

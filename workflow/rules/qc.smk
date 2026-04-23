@@ -36,6 +36,61 @@ rule quast:
         """
 
 
+rule get_ceckm_db:
+    output:
+        db="results/qc/checkm/database/uniref100.KO.1.dmnd",
+    log:
+        "results/qc/checkm/logs/db.log",
+    conda:
+        "../envs/checkm.yml"
+    params:
+        existing_db=config["checkm"]["existing_db"],
+        outdir=lambda wc, output: os.path.dirname(output[0]),
+    message:
+        """--- Getting CheckM database ---"""
+    shell:
+        """
+        if [ -n "{params.existing_db}" ]; then
+          echo 'Using supplied CheckM DB from: {params.existing_db}' > {log};
+          ln -s {params.existing_db} {output.db};
+        else
+          echo "The most recent checkM DB will be downloaded..." > {log};
+          checkm2 database --download --path {params.outdir} &>> {log};
+          ln -s {params.outdir}/CheckM2_database/uniref100.KO.1.dmnd {output.db};
+        fi;
+        """
+
+
+rule checkm:
+    input:
+        fasta=get_all_fasta,
+        db=rules.get_ceckm_db.output.db,
+    output:
+        tsv="results/qc/checkm/predicted/quality_report.tsv",
+    log:
+        "results/qc/checkm/logs/checkm.log",
+    conda:
+        "../envs/checkm.yml"
+    threads: max(workflow.cores * 0.5, 1)
+    params:
+        outdir=lambda wc, output: os.path.dirname(output.tsv),
+        extra=config["checkm"]["extra"],
+    message:
+        """--- Running CheckM to assess genome completeness and contamination ---"""
+    shell:
+        """
+        checkm2 predict \
+          --threads {threads} \
+          --input {input.fasta} \
+          --database_path {input.db} \
+          --output-directory {params.outdir} \
+          --force \
+          {params.extra} \
+          &> {log};
+          rm -f {params.outdir}/checkm2.log
+        """
+
+
 rule fastani:
     input:
         fasta=get_all_fasta,

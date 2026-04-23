@@ -35,6 +35,11 @@ fastani:
   skip: False
   extra: ""
 
+checkm:
+  skip: True
+  existing_db: ""
+  extra: ""
+
 rgi:
   skip: False
   extra: "--clean --alignment_tool DIAMOND"
