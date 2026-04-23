@@ -117,4 +117,8 @@ snakemake --cores 2 --sdm conda apptainer --directory .test
 
 > Tonkin-Hill G, MacAlasdair N, Ruis C, Weimann A, Horesh G, Lees JA, Gladstone RA, Lo S, Beaudoin C, Floto RA, Frost SDW, Corander J, Bentley SD, Parkhill J. _Producing polished prokaryotic pangenomes with the Panaroo pipeline_. Genome Biol. 21(1):180, **2020**. PMID: 32698896. https://doi.org/10.1186/s13059-020-02090-4.
 
-> Köster, J., Mölder, F., Jablonski, K. P., Letcher, B., Hall, M. B., Tomkins-Tinch, C. H., Sochat, V., Forster, J., Lee, S., Twardziok, S. O., Kanitz, A., Wilm, A., Holtgrewe, M., Rahmann, S., & Nahnsen, S. _Sustainable data analysis with Snakemake_. F1000Research, 10:33, 10, 33, **2021**. https://doi.org/10.12688/f1000research.29032.2.
+> Köster J., Mölder F., Jablonski K. P., Letcher B., Hall M. B., Tomkins-Tinch C. H., Sochat V., Forster J., Lee S., Twardziok S. O., Kanitz A., Wilm A., Holtgrewe M., Rahmann S., & Nahnsen S. _Sustainable data analysis with Snakemake_. F1000Research, 10:33, 10, 33, **2021**. https://doi.org/10.12688/f1000research.29032.2.
+
+> Coombe L, Kazemi P, Wong J, Birol I, Warren RL. _ntSynt: multi-genome synteny detection using minimizer graph mappings_. BMC Biology. 23:367, **2025**. https://doi.org/10.1186/s12915-025-02455-w
+
+> Coombe L, Warren RL, Birol I. _ntSynt-viz: Visualizing synteny patterns across multiple genomes_. bioRxiv 2025.01.15.633221. https://doi.org/10.1101/2025.01.15.633221

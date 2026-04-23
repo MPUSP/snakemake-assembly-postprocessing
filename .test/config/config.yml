@@ -2,8 +2,9 @@ samplesheet: "config/samples.csv"
 tool: ["prokka"]
 
 reference:
-  fasta: ""
-  gff: ""
+  fasta: "data/ref_genome.fasta"
+  gff: "data/ref_genome.gff"
+  name: "Ref Genome"
 
 pgap:
   bin: "path/to/pgap.py"
@@ -34,6 +35,18 @@ fastani:
   skip: False
   extra: ""
 
+checkm:
+  skip: True
+  existing_db: ""
+  extra: ""
+
 rgi:
   skip: False
   extra: "--clean --alignment_tool DIAMOND"
+
+synteny:
+  skip: False
+  divergence: 1
+  extra: ""
+  viz_scale: "1e6"
+  viz_extra: "--normalize"

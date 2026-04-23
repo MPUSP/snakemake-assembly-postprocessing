@@ -1,7 +1,8 @@
-name: bakta
+name: ntsynt
 channels:
   - conda-forge
   - bioconda
   - nodefaults
 dependencies:
-  - bakta=1.12
+  - ntsynt=1.0.5
+  - ntsynt-viz=1.0.4
