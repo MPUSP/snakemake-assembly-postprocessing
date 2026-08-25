@@ -10,7 +10,7 @@ from datetime import datetime
 # -----------------------------------------------------
 # container definition (optional)
 # -----------------------------------------------------
-container: "oras://ghcr.io/mpusp/snakemake-assembly-postprocessing:latest"
+containerized: "oras://ghcr.io/mpusp/snakemake-assembly-postprocessing:latest"
 
 
 # -----------------------------------------------------
