@@ -100,15 +100,15 @@ rule annotate_prokka:
     shell:
         """
         prokka \
-          --locustag {params.locustag} \
-          --genus {params.genus} \
-          --species {params.species} \
-          --strain {params.strain} \
-          --prefix {params.prefix} \
-          --outdir {params.outdir} \
-          --force {params.extra} \
-          --cpus {threads} \
-          {input.fasta} &> {log}
+            --locustag {params.locustag} \
+            --genus {params.genus} \
+            --species {params.species} \
+            --strain {params.strain} \
+            --prefix {params.prefix} \
+            --outdir {params.outdir} \
+            --force {params.extra} \
+            --cpus {threads} \
+            {input.fasta} &>{log}
         """
 
 
@@ -136,14 +136,14 @@ rule get_bakta_db:
     shell:
         """
         if [ {params.download_db} != 'none' ]; then
-          echo 'The most recent of the following available Bakta DBs is downloaded:' > {log};
-          bakta_db list &>> {log};
-          bakta_db download --output {params.outdir} --type {params.download_db} &>> {log};
+            echo 'The most recent of the following available Bakta DBs is downloaded:' >{log}
+            bakta_db list &>>{log}
+            bakta_db download --output {params.outdir} --type {params.download_db} &>>{log}
         else
-          echo 'Using Bakta DB from supplied input dir: {params.existing_db}' > {log};
-          ln -s {params.existing_db} {output.db};
-          echo 'Update AMRFinderPlus DB using supplied input dir: {params.existing_db}' >> {log};
-          amrfinder_update --force_update --database {params.existing_db}/amrfinderplus-db &>> {log}
+            echo 'Using Bakta DB from supplied input dir: {params.existing_db}' >{log}
+            ln -s {params.existing_db} {output.db}
+            echo 'Update AMRFinderPlus DB using supplied input dir: {params.existing_db}' >>{log}
+            amrfinder_update --force_update --database {params.existing_db}/amrfinderplus-db &>>{log}
         fi
         """
 
@@ -172,14 +172,14 @@ rule annotate_bakta:
     shell:
         """
         bakta \
-          --db {input.db} \
-          --prefix {params.prefix} \
-          --output {params.outdir} \
-          --locus-tag {params.locustag} \
-          --species '{params.species}' \
-          --strain {params.strain} \
-          --threads {threads} \
-          --force {params.extra} \
-          {input.fasta} &> {log};
-          mv {output.gff}3 {output.gff}
+            --db {input.db} \
+            --prefix {params.prefix} \
+            --output {params.outdir} \
+            --locus-tag {params.locustag} \
+            --species '{params.species}' \
+            --strain {params.strain} \
+            --threads {threads} \
+            --force {params.extra} \
+            {input.fasta} &>{log}
+        mv {output.gff}3 {output.gff}
         """

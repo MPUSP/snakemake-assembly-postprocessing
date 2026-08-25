@@ -26,13 +26,13 @@ rule quast:
     shell:
         """
         quast \
-        --output-dir {params.outdir} \
-        --threads {threads} \
-        {params.ref_fasta} \
-        {params.ref_gff} \
-        {params.extra} \
-        {input.fasta} \
-        > {log} 2>&1
+            --output-dir {params.outdir} \
+            --threads {threads} \
+            {params.ref_fasta} \
+            {params.ref_gff} \
+            {params.extra} \
+            {input.fasta} \
+            >{log} 2>&1
         """
 
 
@@ -51,13 +51,13 @@ rule get_ceckm_db:
     shell:
         """
         if [ -n "{params.existing_db}" ]; then
-          echo 'Using supplied CheckM DB from: {params.existing_db}' > {log};
-          ln -s {params.existing_db} {output.db};
+            echo 'Using supplied CheckM DB from: {params.existing_db}' >{log}
+            ln -s {params.existing_db} {output.db}
         else
-          echo "The most recent checkM DB will be downloaded..." > {log};
-          checkm2 database --download --path {params.outdir} &>> {log};
-          ln -s {params.outdir}/CheckM2_database/uniref100.KO.1.dmnd {output.db};
-        fi;
+            echo "The most recent checkM DB will be downloaded..." >{log}
+            checkm2 database --download --path {params.outdir} &>>{log}
+            ln -s {params.outdir}/CheckM2_database/uniref100.KO.1.dmnd {output.db}
+        fi
         """
 
 
@@ -80,14 +80,14 @@ rule checkm:
     shell:
         """
         checkm2 predict \
-          --threads {threads} \
-          --input {input.fasta} \
-          --database_path {input.db} \
-          --output-directory {params.outdir} \
-          --force \
-          {params.extra} \
-          &> {log};
-          rm -f {params.outdir}/checkm2.log
+            --threads {threads} \
+            --input {input.fasta} \
+            --database_path {input.db} \
+            --output-directory {params.outdir} \
+            --force \
+            {params.extra} \
+            &>{log}
+        rm -f {params.outdir}/checkm2.log
         """
 
 
@@ -111,15 +111,15 @@ rule fastani:
         """--- Running FastANI to compare genome similarity (all vs all) ---"""
     shell:
         """
-        printf '%s\n' {input.fasta} > {params.outdir}/input_files.txt;
-        printf '%s\n' {params.ref_fasta} >> {params.outdir}/input_files.txt;
+        printf '%s\n' {input.fasta} >{params.outdir}/input_files.txt
+        printf '%s\n' {params.ref_fasta} >>{params.outdir}/input_files.txt
         fastANI \
-          --ql {params.outdir}/input_files.txt \
-          --rl {params.outdir}/input_files.txt \
-          --output {output.txt} \
-          --threads {threads} \
-          {params.extra} \
-          > {log} 2>&1
+            --ql {params.outdir}/input_files.txt \
+            --rl {params.outdir}/input_files.txt \
+            --output {output.txt} \
+            --threads {threads} \
+            {params.extra} \
+            >{log} 2>&1
         """
 
 
@@ -141,13 +141,13 @@ rule prepare_panaroo:
         """--- Prepare input files for pan-genome alignment ---"""
     shell:
         """
-        echo 'Preparing annotation for Panaroo:' > {log};
-        echo '  - formatting seqnames in FASTA files' >> {log};
+        echo 'Preparing annotation for Panaroo:' >{log}
+        echo '  - formatting seqnames in FASTA files' >>{log}
         awk '{{ sub(/>.*\\|/, ">"); sub(/[[:space:]].*$/, ""); print }}' \
-          {input.fasta} > {output.fasta} 2>> {log};
-        echo '  - removing sequences and selected features in GFF files' >> {log};
+            {input.fasta} >{output.fasta} 2>>{log}
+        echo '  - removing sequences and selected features in GFF files' >>{log}
         awk ' /^##FASTA/ {{exit}} $2 !~ /{params.remove_source}/ && $3 !~ /{params.remove_feature}/ {{print}}' \
-          {input.gff} > {output.gff} 2>> {log}
+            {input.gff} >{output.gff} 2>>{log}
         """
 
 
@@ -169,15 +169,15 @@ rule panaroo:
         """--- Running PANAROO to create pangenome from all annotations ---"""
     shell:
         """
-        printf '%s\n' {input.gff} | \
-          paste -d ' ' - <(printf '%s\n' {input.fasta}) \
-          > {params.outdir}/input_files.txt;
+        printf '%s\n' {input.gff} \
+            | paste -d ' ' - <(printf '%s\n' {input.fasta}) \
+                >{params.outdir}/input_files.txt
         panaroo \
-          -i {params.outdir}/input_files.txt \
-          -o {params.outdir} \
-          -t {threads} \
-          {params.extra} \
-          > {log} 2>&1
+            -i {params.outdir}/input_files.txt \
+            -o {params.outdir} \
+            -t {threads} \
+            {params.extra} \
+            >{log} 2>&1
         """
 
 
@@ -218,18 +218,18 @@ rule synteny_detection:
     shell:
         """
         ntSynt {input.fastas} \
-          -d {params.divergence} \
-          -t {threads} \
-          --force \
-          --prefix ntSynt \
-          {params.extra} \
-          > {log} 2>&1;
-        echo "Synteny detection completed. Moving results to output directory." >> {log};
-        rsync ./ntSynt.* {params.outdir}/;
-        echo "Create fai output directory." >> {log};
-        mkdir -p {output.fai};
-        rsync ./*.fai {output.fai}/;
-        echo "Remove intermediate files." >> {log};
+            -d {params.divergence} \
+            -t {threads} \
+            --force \
+            --prefix ntSynt \
+            {params.extra} \
+            >{log} 2>&1
+        echo "Synteny detection completed. Moving results to output directory." >>{log}
+        mv -f ./ntSynt.* {params.outdir}/
+        echo "Create fai output directory." >>{log}
+        mkdir -p {output.fai}
+        mv -f ./*.fai {output.fai}/
+        echo "Remove intermediate files." >>{log}
         rm -f ./*.fai ./*.tsv ./*.bf ./*.dot
         """
 
@@ -289,19 +289,19 @@ rule viz_synteny:
     shell:
         """
         ntsynt_viz.py \
-          --blocks {input.blocks} \
-          --fais {params.fais} \
-          --name_conversion {input.names} \
-          {params.ref_fasta} \
-          --scale {params.scale} \
-          --format pdf \
-          --prefix ntSynt-viz \
-          {params.extra} \
-          > {log} 2>&1;
-          echo "Synteny-viz completed. Moving results to output directory." >> {log};
-        rsync ./ntSynt.* {params.outdir}/;
-        rsync ./ntSynt-viz.* {params.outdir}/;
-        rsync ./ntSynt-viz_* {params.outdir}/;
-        echo "Clean intermediate files." >> {log};
-        rm -f ./ntSynt-viz.*.tsv ./ntSynt-viz_* ./ntSynt.*.tsv;
+            --blocks {input.blocks} \
+            --fais {params.fais} \
+            --name_conversion {input.names} \
+            {params.ref_fasta} \
+            --scale {params.scale} \
+            --format pdf \
+            --prefix ntSynt-viz \
+            {params.extra} \
+            >{log} 2>&1
+        echo "Synteny-viz completed. Moving results to output directory." >>{log}
+        mv -f ./ntSynt.* {params.outdir}/
+        mv -f ./ntSynt-viz.* {params.outdir}/
+        mv -f ./ntSynt-viz_* {params.outdir}/
+        echo "Clean intermediate files." >>{log}
+        rm -f ./ntSynt-viz.*.tsv ./ntSynt-viz_* ./ntSynt.*.tsv
         """
