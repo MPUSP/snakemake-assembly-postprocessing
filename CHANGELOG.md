@@ -1,5 +1,28 @@
 # Changelog
 
+## [1.4.0](https://github.com/MPUSP/snakemake-assembly-postprocessing/compare/v1.3.0...v1.4.0) (2026-09-02)
+
+
+### Features
+
+* add checkM tool; closes [#14](https://github.com/MPUSP/snakemake-assembly-postprocessing/issues/14) ([3a0133a](https://github.com/MPUSP/snakemake-assembly-postprocessing/commit/3a0133a5a010ea99500af61021c5f221c669e7c5))
+* add synteny anlaysis and viz using ntSynt ([af66e43](https://github.com/MPUSP/snakemake-assembly-postprocessing/commit/af66e434b37b41aeb7320f0446a3d0f10aab4327))
+* added ntSynt and ntSynt-viz for synteny analysis + bug fix ([6d9f5cb](https://github.com/MPUSP/snakemake-assembly-postprocessing/commit/6d9f5cb99c8de90df6d5cbdb5611c3e34ba288f9))
+
+
+### Bug Fixes
+
+* add ref to synteny if defined in config; added ref_sequence for testing; closes  [#17](https://github.com/MPUSP/snakemake-assembly-postprocessing/issues/17) ([49a451e](https://github.com/MPUSP/snakemake-assembly-postprocessing/commit/49a451edd0e90409cb01a750009d040eb8f27006))
+* allow numeric strain and sample names ([5f1e10c](https://github.com/MPUSP/snakemake-assembly-postprocessing/commit/5f1e10c121b0993b53fd2e5f7f51d778a88cdef5))
+* container directive ([6cd8742](https://github.com/MPUSP/snakemake-assembly-postprocessing/commit/6cd874258dcd4a0468304d76ac386dea8c54aa1b))
+* dependency ([90eb0ca](https://github.com/MPUSP/snakemake-assembly-postprocessing/commit/90eb0ca08049bffcd92664e5723175830f660896))
+* forgot 'extra' parameter in synteny detection. ([3afccf5](https://github.com/MPUSP/snakemake-assembly-postprocessing/commit/3afccf5971419ea54439248fe604bbdd925fd916))
+* formatting, early-fail on empty df, type enforcement for sample sheet ([b8b013b](https://github.com/MPUSP/snakemake-assembly-postprocessing/commit/b8b013b21cd05c44b64c2912305e167564aff176))
+* formatting, swap rsync with mv ([2b142b7](https://github.com/MPUSP/snakemake-assembly-postprocessing/commit/2b142b7050ab1ec9536ae9865c7a5275ef8d737f))
+* minor change in config ([fa92fb8](https://github.com/MPUSP/snakemake-assembly-postprocessing/commit/fa92fb80a9f0105f8edaadc651bc0d249197f5b4))
+* remove prefix param; closes [#18](https://github.com/MPUSP/snakemake-assembly-postprocessing/issues/18) ([75f9965](https://github.com/MPUSP/snakemake-assembly-postprocessing/commit/75f996588413535228af499ea2e04d360684bf89))
+* update bakta version. ([3c3d61a](https://github.com/MPUSP/snakemake-assembly-postprocessing/commit/3c3d61a7fa410a4c2e5e0927c077b5c2f8aa7ec5))
+
 ## [1.3.0](https://github.com/MPUSP/snakemake-assembly-postprocessing/compare/v1.2.0...v1.3.0) (2026-04-22)
 
 
