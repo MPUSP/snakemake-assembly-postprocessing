@@ -1,4 +1,4 @@
-rule get_fasta:
+rule get_pgap_fasta:
     input:
         get_fasta,
     output:
@@ -15,7 +15,7 @@ rule get_fasta:
 
 rule prepare_yaml_files:
     input:
-        fasta=rules.get_fasta.output.fasta,
+        fasta=rules.get_pgap_fasta.output.fasta,
     output:
         input_yaml="results/annotation/pgap/prepare_files/{sample}/input.yaml",
         submol_yaml="results/annotation/pgap/prepare_files/{sample}/submol.yaml",
@@ -39,7 +39,7 @@ rule annotate_pgap:
         branch(
             lookup(dpath="pgap/use_yaml_config", within=config),
             then=rules.prepare_yaml_files.output.input_yaml,
-            otherwise=rules.get_fasta.output.fasta,
+            otherwise=rules.get_pgap_fasta.output.fasta,
         ),
     output:
         gff="results/annotation/pgap/{sample}/{sample}.gff",
@@ -78,7 +78,7 @@ rule annotate_pgap:
 
 rule annotate_prokka:
     input:
-        fasta=rules.get_fasta.output.fasta,
+        fasta=get_fasta,
     output:
         gff="results/annotation/prokka/{sample}/{sample}.gff",
         fasta="results/annotation/prokka/{sample}/{sample}.fna",
@@ -100,15 +100,15 @@ rule annotate_prokka:
     shell:
         """
         prokka \
-          --locustag {params.locustag} \
-          --genus {params.genus} \
-          --species {params.species} \
-          --strain {params.strain} \
-          --prefix {params.prefix} \
-          --outdir {params.outdir} \
-          --force {params.extra} \
-          --cpus {threads} \
-          {input.fasta} &> {log}
+            --locustag {params.locustag} \
+            --genus {params.genus} \
+            --species {params.species} \
+            --strain {params.strain} \
+            --prefix {params.prefix} \
+            --outdir {params.outdir} \
+            --force {params.extra} \
+            --cpus {threads} \
+            {input.fasta} &>{log}
         """
 
 
@@ -136,21 +136,21 @@ rule get_bakta_db:
     shell:
         """
         if [ {params.download_db} != 'none' ]; then
-          echo 'The most recent of the following available Bakta DBs is downloaded:' > {log};
-          bakta_db list &>> {log};
-          bakta_db download --output {params.outdir} --type {params.download_db} &>> {log};
+            echo 'The most recent of the following available Bakta DBs is downloaded:' >{log}
+            bakta_db list &>>{log}
+            bakta_db download --output {params.outdir} --type {params.download_db} &>>{log}
         else
-          echo 'Using Bakta DB from supplied input dir: {params.existing_db}' > {log};
-          ln -s {params.existing_db} {output.db};
-          echo 'Update ARMFinderPlus DB using supplied input dir: {params.existing_db}' >> {log};
-          amrfinder_update --force_update --database {params.existing_db}/amrfinderplus-db &>> {log}
+            echo 'Using Bakta DB from supplied input dir: {params.existing_db}' >{log}
+            ln -s {params.existing_db} {output.db}
+            echo 'Update AMRFinderPlus DB using supplied input dir: {params.existing_db}' >>{log}
+            amrfinder_update --force_update --database {params.existing_db}/amrfinderplus-db &>>{log}
         fi
         """
 
 
 rule annotate_bakta:
     input:
-        fasta=rules.get_fasta.output.fasta,
+        fasta=get_fasta,
         db=rules.get_bakta_db.output.db,
     output:
         gff="results/annotation/bakta/{sample}/{sample}.gff",
@@ -172,14 +172,14 @@ rule annotate_bakta:
     shell:
         """
         bakta \
-          --db {input.db} \
-          --prefix {params.prefix} \
-          --output {params.outdir} \
-          --locus-tag {params.locustag} \
-          --species '{params.species}' \
-          --strain {params.strain} \
-          --threads {threads} \
-          --force {params.extra} \
-          {input.fasta} &> {log};
-          mv {output.gff}3 {output.gff}
+            --db {input.db} \
+            --prefix {params.prefix} \
+            --output {params.outdir} \
+            --locus-tag {params.locustag} \
+            --species '{params.species}' \
+            --strain {params.strain} \
+            --threads {threads} \
+            --force {params.extra} \
+            {input.fasta} &>{log}
+        mv {output.gff}3 {output.gff}
         """

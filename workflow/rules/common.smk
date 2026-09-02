@@ -1,4 +1,6 @@
 # import basic packages
+import glob
+import os
 import pandas as pd
 import re
 from snakemake import logging
@@ -30,6 +32,14 @@ def get_fasta(wildcards):
 def get_all_fasta(wildcards):
     """Get all input fasta files for all samples."""
     return [samples.loc[s, "file"] for s in samples.index]
+
+
+def get_fasta_ntsynt(wildcards):
+    """Get the fasta file for ntSynt, including reference if provided."""
+    fastas = get_all_fasta(wildcards)
+    if config["reference"]["fasta"]:
+        fastas.append(config["reference"]["fasta"])
+    return fastas
 
 
 def get_panaroo_gff(wildcards):
@@ -69,12 +79,23 @@ def get_final_input(wildcards):
         inputs += expand(
             "results/qc/fastani/summary.txt",
         )
+    if not config["checkm"]["skip"]:
+        inputs += expand(
+            "results/qc/checkm/predicted/quality_report.tsv",
+        )
     if not config["rgi"]["skip"]:
         inputs += expand(
             "results/qc/rgi/{sample}/result.{ext}",
             sample=samples.index,
             ext=["txt", "json"],
         )
+    if not config["synteny"]["skip"]:
+        if len(samples.index) > 1 or (
+            len(samples.index) == 1 and config["reference"]["fasta"] != ""
+        ):
+            inputs += expand(
+                "results/qc/genome_synteny/ntSynt-viz_ribbon-plot.pdf",
+            )
     return inputs
 
 
