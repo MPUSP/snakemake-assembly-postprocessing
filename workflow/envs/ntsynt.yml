@@ -4,5 +4,5 @@ channels:
   - bioconda
   - nodefaults
 dependencies:
-  - ntsynt=1.0.5
-  - ntsynt-viz=1.0.4
+  - ntsynt=1.0.9
+  - ntsynt-viz=1.1.1
