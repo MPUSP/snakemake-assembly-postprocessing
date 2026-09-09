@@ -1,0 +1,13 @@
+name: vcfutils
+channels:
+  - conda-forge
+  - bioconda
+  - nodefaults
+dependencies:
+  - minimap2=2.31
+  - bcftools=1.24
+  - perl-vcftools-vcf=0.1.15
+  - snippy=4.0.2
+  - htslib=1.24
+  - r-pafr=0.0.2
+  - r-readr=2.2.0

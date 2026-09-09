@@ -96,6 +96,17 @@ def get_final_input(wildcards):
             inputs += expand(
                 "results/qc/genome_synteny/ntSynt-viz_ribbon-plot.pdf",
             )
+    if (
+        config["reference"]["fasta"] != ""
+        and not config["reference_comparison"]["skip"]
+    ):
+        inputs += expand(
+            "results/qc/reference_comparison/all_merged_aln.vcf.gz",
+        )
+        inputs += expand(
+            "results/qc/reference_comparison/{sample}_dotplot.pdf",
+            sample=samples.index,
+        )
     return inputs
 
 

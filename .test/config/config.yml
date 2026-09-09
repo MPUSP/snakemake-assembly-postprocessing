@@ -50,3 +50,14 @@ synteny:
   extra: ""
   viz_scale: "1e6"
   viz_extra: "--normalize"
+
+reference_comparison:
+  skip: False
+  minimap2:
+    extra: "-c --cs"
+    sorting: "coordinate"
+    sort_extra: "--no-PG"
+  paftools:
+    extra: ""
+  bcftools:
+    extra: ""

@@ -305,3 +305,117 @@ rule viz_synteny:
         echo "Clean intermediate files." >>{log}
         rm -f ./ntSynt-viz.*.tsv ./ntSynt-viz_* ./ntSynt.*.tsv
         """
+
+
+rule minimap2_paf:
+    input:
+        target=config["reference"]["fasta"],
+        query=get_fasta,
+    output:
+        "results/qc/reference_comparison/{sample}_aln.paf",
+    log:
+        "results/qc/reference_comparison/logs/{sample}_aln.log",
+    threads: max(workflow.cores * 0.25, 1)
+    params:
+        extra=config["reference_comparison"]["minimap2"]["extra"],
+        sorting=config["reference_comparison"]["minimap2"]["sorting"],
+        sort_extra=config["reference_comparison"]["minimap2"]["sort_extra"],
+    message:
+        """--- Running assembly-to-assembly mapping using minimap2 ---"""
+    wrapper:
+        "v9.7.0/bio/minimap2/aligner"
+
+
+rule paftools_vcf:
+    input:
+        target=config["reference"]["fasta"],
+        query=rules.minimap2_paf.output,
+    output:
+        tab="results/qc/reference_comparison/{sample}_aln.tab",
+        vcf="results/qc/reference_comparison/{sample}_aln.vcf",
+        vcf_gz="results/qc/reference_comparison/{sample}_aln.vcf.gz",
+        index="results/qc/reference_comparison/{sample}_aln.vcf.gz.tbi",
+    log:
+        "results/qc/reference_comparison/logs/{sample}_vcf.log",
+    conda:
+        "../envs/vcfutils.yml"
+    threads: max(workflow.cores * 0.25, 1)
+    params:
+        extra=config["reference_comparison"]["paftools"]["extra"],
+    message:
+        """--- Running assembly-to-assembly mapping using minimap2 ---"""
+    shell:
+        """
+        sort -k6,6 -k8,8n {input.query} \
+            | paftools.js call -f {input.target} - \
+                {params.extra} 2>{log} \
+            | bcftools reheader \
+                --threads {threads} \
+                -n {wildcards.sample} \
+            | vcf-annotate --fill-type \
+                >{output.vcf} 2>>{log}
+        snippy-vcf_to_tab --ref {input.target} \
+            --vcf {output.vcf} \
+            >{output.tab} 2>>{log}
+        bgzip -c {output.vcf} >{output.vcf_gz} 2>>{log}
+        tabix {output.vcf_gz}
+        """
+
+
+rule merge_vcfs:
+    input:
+        vcfs=expand(
+            "results/qc/reference_comparison/{sample}_aln.vcf.gz", sample=samples.index
+        ),
+    output:
+        merged_vcf_gz="results/qc/reference_comparison/all_merged_aln.vcf.gz",
+        index="results/qc/reference_comparison/all_merged_aln.vcf.gz.tbi",
+    log:
+        "results/qc/reference_comparison/logs/merge_vcfs.log",
+    conda:
+        "../envs/vcfutils.yml"
+    threads: max(workflow.cores * 0.5, 1)
+    params:
+        extra=config["reference_comparison"]["bcftools"]["extra"],
+        num_input=len(samples.index),
+    message:
+        """--- Merging individual VCF files into a single multi-sample VCF ---"""
+    shell:
+        """
+        if [ {params.num_input} -eq 1 ]; then
+            echo "Only one VCF file present. Copying to merged output." >{log}
+            cp {input.vcfs} {output.merged_vcf_gz}
+        else
+            echo "Merging {params.num_input} VCF files using bcftools..." >{log}
+            bcftools merge \
+                {input.vcfs} \
+                {params.extra} \
+                --output {output.merged_vcf_gz} \
+                >>{log} 2>&1
+        fi
+        tabix {output.merged_vcf_gz}
+        """
+
+
+rule dotplot:
+    input:
+        query=rules.minimap2_paf.output,
+    output:
+        pdf="results/qc/reference_comparison/{sample}_dotplot.pdf",
+        png="results/qc/reference_comparison/{sample}_dotplot.png",
+    log:
+        path="results/qc/reference_comparison/logs/{sample}_dotplot.log",
+    conda:
+        "../envs/vcfutils.yml"
+    threads: 1
+    params:
+        query=lambda wc: samples.loc[samples["sample"] == wc.sample, "strain"].values[0],
+        target=(
+            config["reference"]["name"]
+            if config["reference"]["name"]
+            else os.basename(config["reference"]["fasta"])
+        ),
+    message:
+        """--- Generating dotplot for assembly-to-assembly comparison ---"""
+    script:
+        "../scripts/create_dotplot.R"
