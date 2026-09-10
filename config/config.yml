@@ -61,3 +61,8 @@ reference_comparison:
     extra: ""
   bcftools:
     extra: ""
+  snpeff:
+    build:
+      extra: "-noCheckCds -noCheckProtein -noLog -q"
+    annotate:
+      extra: "-nodownload -ud 0 -noLog"

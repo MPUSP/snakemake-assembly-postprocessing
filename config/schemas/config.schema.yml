@@ -244,11 +244,30 @@ properties:
             default: ""
         required:
           - extra
-    required:
-      - skip
-      - minimap2
-      - paftools
-      - bcftools
+      snpeff:
+        type: object
+        properties:
+          build:
+            type: object
+            properties:
+              extra:
+                type: string
+                description: Extra command-line arguments for snpEff build
+                default: "-noCheckCds -noCheckProtein -noLog -q"
+            required:
+              - extra
+          annotate:
+            type: object
+            properties:
+              extra:
+                type: string
+                description: Extra command-line arguments for snpEff annotate
+                default: "-nodownload -ud 0 -noLog"
+            required:
+              - extra
+        required:
+          - build
+          - annotate
 required:
   - samplesheet
   - tool
