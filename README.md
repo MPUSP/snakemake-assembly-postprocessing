@@ -30,15 +30,18 @@ _Workflow overview:_
 
 ## Workflow overview
 
-1. Parse `samples.csv` table containing the samples's meta data (`python`)
+1. Parse `samples.csv` table containing the samples's meta data (`python`).
 2. Annotate assemblies using one of the following tools:
-   1. NCBI's Prokaryotic Genome Annotation Pipeline ([PGAP](https://github.com/ncbi/pgap)). Note: needs to be installed manually
-   2. [prokka](https://github.com/tseemann/prokka), a fast and light-weight prokaryotic annotation tool
-   3. [bakta](https://github.com/oschwengers/bakta), a fast, alignment-free annotation tool. Note: Bakta will automatically download its companion database from zenodo (light: 1.5 GB, full: 40 GB)
-3. Predict antimicrobial resistance (AMR) genes using [RGI](https://github.com/arpcard/rgi)
-4. Create a QC report for the assemblies using [Quast](https://github.com/ablab/quast)
-5. Create a pangenome analysis (orthologs/homologs) using [Panaroo](https://gthlab.au/panaroo/)
+   1. NCBI's Prokaryotic Genome Annotation Pipeline ([PGAP](https://github.com/ncbi/pgap)). Note: needs to be installed manually.
+   2. [prokka](https://github.com/tseemann/prokka), a fast and light-weight prokaryotic annotation tool.
+   3. [bakta](https://github.com/oschwengers/bakta), a fast, alignment-free annotation tool. Note: Bakta will automatically download its companion database from zenodo (light: 1.5 GB, full: 40 GB).
+3. Predict antimicrobial resistance (AMR) genes using [RGI](https://github.com/arpcard/rgi).
+4. Create a QC report for the assemblies using [Quast](https://github.com/ablab/quast).
+5. Create a pangenome analysis (orthologs/homologs) using [Panaroo](https://gthlab.au/panaroo/).
 6. Compute pairwise average nucleotide identity (ANI) between the assemblies using [FastANI](https://github.com/ParBLiSS/FastANI) and plot a phylogenetic tree based on the ANI distances.
+7. Estimate genome completeness and contamination with [checkM2](https://github.com/chklovski/CheckM2).
+8. Detect and visualize multi-genome synteny with [ntSynt](https://github.com/BirolLab/ntSynt) and [ntSynt-viz](https://github.com/BirolLab/ntSynt-viz).
+9. Compute pairwise whole-genome reference comparison and annotate variant effects with [minimap2](https://github.com/lh3/minimap2), [vcftools](https://github.com/vcftools/vcftools), [bcftools](https://github.com/samtools/bcftools) and [snpEff](https://github.com/pcingola/snpeff).
 
 ## Installation
 
@@ -119,6 +122,6 @@ snakemake --cores 2 --sdm conda apptainer --directory .test
 
 > Köster J., Mölder F., Jablonski K. P., Letcher B., Hall M. B., Tomkins-Tinch C. H., Sochat V., Forster J., Lee S., Twardziok S. O., Kanitz A., Wilm A., Holtgrewe M., Rahmann S., & Nahnsen S. _Sustainable data analysis with Snakemake_. F1000Research, 10:33, 10, 33, **2021**. https://doi.org/10.12688/f1000research.29032.2.
 
-> Coombe L, Kazemi P, Wong J, Birol I, Warren RL. _ntSynt: multi-genome synteny detection using minimizer graph mappings_. BMC Biology. 23:367, **2025**. https://doi.org/10.1186/s12915-025-02455-w
+> Coombe L, Kazemi P, Wong J, Birol I, Warren RL. _ntSynt: multi-genome synteny detection using minimizer graph mappings_. BMC Biology., 23:367, **2025**. https://doi.org/10.1186/s12915-025-02455-w
 
-> Coombe L, Warren RL, Birol I. _ntSynt-viz: Visualizing synteny patterns across multiple genomes_. bioRxiv 2025.01.15.633221. https://doi.org/10.1101/2025.01.15.633221
+> Coombe L, Warren RL, Birol I. _ntSynt-viz: Visualizing synteny patterns across multiple genomes_. J. Evol. Biol., **2026**. https://doi.org/10.1093/jeb/voag079

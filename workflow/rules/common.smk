@@ -44,7 +44,7 @@ def get_fasta_ntsynt(wildcards):
 
 def get_panaroo_gff(wildcards):
     return expand(
-        "results/qc/panaroo/{tool}/prepare/{sample}.gff",
+        "results/panaroo/{tool}/prepare/{sample}.gff",
         tool=wildcards.tool,
         sample=samples.index,
     )
@@ -52,7 +52,7 @@ def get_panaroo_gff(wildcards):
 
 def get_panaroo_fasta(wildcards):
     return expand(
-        "results/qc/panaroo/{tool}/prepare/{sample}.fna",
+        "results/panaroo/{tool}/prepare/{sample}.fna",
         tool=wildcards.tool,
         sample=samples.index,
     )
@@ -72,12 +72,12 @@ def get_final_input(wildcards):
     )
     if len(samples.index) > 1 and not config["panaroo"]["skip"]:
         inputs += expand(
-            "results/qc/panaroo/{tool}/summary_statistics.txt",
+            "results/panaroo/{tool}/summary_statistics.txt",
             tool=config["tool"],
         )
     if len(samples.index) > 1 and not config["fastani"]["skip"]:
         inputs += expand(
-            "results/qc/fastani/summary.txt",
+            "results/fastani/summary.txt",
         )
     if not config["checkm"]["skip"]:
         inputs += expand(
@@ -85,7 +85,7 @@ def get_final_input(wildcards):
         )
     if not config["rgi"]["skip"]:
         inputs += expand(
-            "results/qc/rgi/{sample}/result.{ext}",
+            "results/rgi/{sample}/result.{ext}",
             sample=samples.index,
             ext=["txt", "json"],
         )
@@ -94,8 +94,24 @@ def get_final_input(wildcards):
             len(samples.index) == 1 and config["reference"]["fasta"] != ""
         ):
             inputs += expand(
-                "results/qc/genome_synteny/ntSynt-viz_ribbon-plot.pdf",
+                "results/genome_synteny/ntSynt-viz_ribbon-plot.pdf",
             )
+    if (
+        config["reference"]["fasta"] != ""
+        and not config["reference_comparison"]["skip"]
+    ):
+        inputs += expand(
+            "results/reference_comparison/all_merged_aln.vcf.gz",
+        )
+        if config["reference"]["gff"] != "":
+            inputs += expand(
+                "results/reference_comparison/annotated_vcf/{sample}_annotated.tab",
+                sample=samples.index,
+            )
+        inputs += expand(
+            "results/reference_comparison/{sample}_dotplot.pdf",
+            sample=samples.index,
+        )
     return inputs
 
 
@@ -121,3 +137,13 @@ def format_bakta_locustag(raw):
             f"\nlocustag '{raw}' converted to '{cleaned}' to meet BAKTA requirements (between 3 and 12 alphanumeric uppercase characters, start with a letter)\n"
         )
     return cleaned
+
+
+def get_chromosome():
+    """Get the chromosome name from the reference fasta file."""
+    if config["reference"]["fasta"]:
+        with open(config["reference"]["fasta"], "r") as f:
+            for line in f:
+                if line.startswith(">"):
+                    return line[1:].strip()
+    return None
