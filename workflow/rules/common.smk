@@ -137,13 +137,3 @@ def format_bakta_locustag(raw):
             f"\nlocustag '{raw}' converted to '{cleaned}' to meet BAKTA requirements (between 3 and 12 alphanumeric uppercase characters, start with a letter)\n"
         )
     return cleaned
-
-
-def get_chromosome():
-    """Get the chromosome name from the reference fasta file."""
-    if config["reference"]["fasta"]:
-        with open(config["reference"]["fasta"], "r") as f:
-            for line in f:
-                if line.startswith(">"):
-                    return line[1:].strip()
-    return None
