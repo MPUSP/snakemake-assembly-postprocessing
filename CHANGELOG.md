@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.5.0](https://github.com/MPUSP/snakemake-assembly-postprocessing/compare/v1.4.0...v1.5.0) (2026-09-16)
+
+
+### Features
+
+* add pairwise whole-genome-comparison and variant calling ([9fae1ec](https://github.com/MPUSP/snakemake-assembly-postprocessing/commit/9fae1ec17c4830dec31314a17601e3724a93bd8a))
+* add variant annotation with snpEff. restructuring output folders. ([d3d1882](https://github.com/MPUSP/snakemake-assembly-postprocessing/commit/d3d18824675ae314de8ff13658cdb0eac923962a))
+* added whole-genome reference comparison and variant annotation ([b259320](https://github.com/MPUSP/snakemake-assembly-postprocessing/commit/b25932035791bdc1e71474f7c56d3ab6b6da9f43))
+
+
+### Bug Fixes
+
+* minor fixes. ([d75a5cb](https://github.com/MPUSP/snakemake-assembly-postprocessing/commit/d75a5cba0e74c4d2ee4a5675b2feed1e294472ba))
+* remove get_chromosome() function ([3fcfb84](https://github.com/MPUSP/snakemake-assembly-postprocessing/commit/3fcfb84ad3282ad1f71e30ea63af21e8196342e6))
+
 ## [1.4.0](https://github.com/MPUSP/snakemake-assembly-postprocessing/compare/v1.3.0...v1.4.0) (2026-09-02)
 
 
