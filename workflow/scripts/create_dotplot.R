@@ -2,7 +2,7 @@ library(pafr, quietly=TRUE)
 library(readr, quietly=TRUE)
 
 paf_file <- snakemake@input[["query"]]
-output_file <- snakemake@output[["pdf"]]
+output_pdf <- snakemake@output[["pdf"]]
 output_png <- snakemake@output[["png"]]
 target_name <- snakemake@params[["target"]]
 query_name <- snakemake@params[["query"]]
@@ -23,7 +23,7 @@ p <- dotplot(alignments, xlab = query_name, ylab = target_name) +
 
 ggsave(
   p,
-  filename = output_file,
+  filename = output_pdf,
   width = 8,
   height = 8
 )

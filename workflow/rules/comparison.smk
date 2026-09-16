@@ -294,7 +294,7 @@ rule snpeff_build_db:
     conda:
         "../envs/vcfutils.yml"
     params:
-        genome_name=get_chromosome(),
+        genome_name=config["reference"]["name"].replace(" ", "_"),
         extra=config["reference_comparison"]["snpeff"]["build"]["extra"],
     message:
         """--- Build custom SnpEff database ---"""
@@ -306,11 +306,10 @@ rule snpeff_build_db:
         cp {input.fasta} {output.db}/sequences.fa
         cp {input.gff} {output.db}/genes.gff
         cp ${{config}} {output.db}/../snpeff.config
-        #echo -e "\n# automatic entry by workflow: snakemake-assembly-postprocessing" >>{output.db}/../snpeff.config
         echo -e "ref.genome : snakemake-assembly-postprocessing reference" >>{output.db}/../snpeff.config
-        echo -e "\tref.chromosome: {params.genome_name}\n" >>{output.db}/../snpeff.config
-        echo -e "\tref.{params.genome_name}.codonTable: Bacterial_and_Plant_Plastid\n" >>{output.db}/../snpeff.config
-        echo -e "\tref.retrieval_date : ${{today}}\n" >>{output.db}/../snpeff.config
+        echo -e "\tref.chromosome: {params.genome_name}" >>{output.db}/../snpeff.config
+        echo -e "\tref.{params.genome_name}.codonTable: Bacterial_and_Plant_Plastid" >>{output.db}/../snpeff.config
+        echo -e "\tref.retrieval_date : ${{today}}" >>{output.db}/../snpeff.config
         snpEff build {params.extra} -c {output.db}/../snpeff.config -gff3 -dataDir $(realpath {output.db}/../) ref >{log} 2>&1
         """
 
